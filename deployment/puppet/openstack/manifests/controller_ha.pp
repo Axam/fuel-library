@@ -342,29 +342,30 @@ class openstack::controller_ha (
       ha_mode                      => $ha_mode,
       nameservers                  => $nameservers,
     }
-    if $quantum and $quantum_network_node {
-      class { '::openstack::quantum_router':
-        #service_endpoint      => $internal_virtual_ip,
-        #auth_host             => $internal_virtual_ip,
-        #nova_api_vip          => $internal_virtual_ip,
-        #private_interface     => $private_interface,
-        #segment_range         => $segment_range,
-        #internal_address      => $internal_address,
-        #public_interface      => $public_interface,
-        #create_networks       => $create_networks,
-        verbose               => $verbose,
-        debug                 => $debug,
-        quantum               => $quantum,
-        quantum_config        => $quantum_config,
-        quantum_network_node  => $quantum_network_node,
-        #quantum_netnode_on_cnt=> $quantum_netnode_on_cnt,
-        service_provider      => $ha_provider,
-        use_syslog            => $use_syslog,
-        syslog_log_level      => $syslog_log_level,
-        syslog_log_facility   => $syslog_log_facility_quantum,
-        ha_mode               => $ha_mode,
-      }
-    }
+    # Removed for Contrail
+    # if $quantum and $quantum_network_node {
+    #   class { '::openstack::quantum_router':
+    #     #service_endpoint      => $internal_virtual_ip,
+    #     #auth_host             => $internal_virtual_ip,
+    #     #nova_api_vip          => $internal_virtual_ip,
+    #     #private_interface     => $private_interface,
+    #     #segment_range         => $segment_range,
+    #     #internal_address      => $internal_address,
+    #     #public_interface      => $public_interface,
+    #     #create_networks       => $create_networks,
+    #     verbose               => $verbose,
+    #     debug                 => $debug,
+    #     quantum               => $quantum,
+    #     quantum_config        => $quantum_config,
+    #     quantum_network_node  => $quantum_network_node,
+    #     #quantum_netnode_on_cnt=> $quantum_netnode_on_cnt,
+    #     service_provider      => $ha_provider,
+    #     use_syslog            => $use_syslog,
+    #     syslog_log_level      => $syslog_log_level,
+    #     syslog_log_facility   => $syslog_log_facility_quantum,
+    #     ha_mode               => $ha_mode,
+    #   }
+    # }
     class { 'openstack::auth_file':
       admin_user              => $admin_user,
       admin_password          => $admin_password,

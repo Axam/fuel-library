@@ -105,10 +105,10 @@ class nova(
   # allowing a resource to serve as a point where the configuration of nova begins
   anchor { 'nova-start': }
 
-  package { 'python-nova':
-    ensure  => $ensure_package,
-    require => Package['python-greenlet']
-  }
+    package { 'python-nova':
+      ensure  => $ensure_package,
+      require => Package['python-greenlet']
+    }
 
   case $queue_provider{
     'rabbitmq': {
@@ -132,11 +132,12 @@ class nova(
   {
     Exec['update-kombu'] -> Nova::Generic_service<||>
   }
-  package { 'nova-common':
-    name    => $::nova::params::common_package_name,
-    ensure  => $ensure_package,
-    require => [Package["python-nova"], Anchor['nova-start']]
-  }
+  
+   package { 'nova-common':
+     name    => $::nova::params::common_package_name,
+     ensure  => $ensure_package,
+     require => [Package["python-nova"], Anchor['nova-start']]
+   }
 
   group { 'nova':
     ensure  => present,

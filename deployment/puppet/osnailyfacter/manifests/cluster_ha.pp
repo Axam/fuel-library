@@ -5,6 +5,10 @@ class osnailyfacter::cluster_ha {
   if $::use_quantum {
     $novanetwork_params  = {}
     $quantum_config = sanitize_quantum_config($::fuel_settings, 'quantum_settings')
+  } elsif $::use_contrail {
+    $novanetwork_params  = {}
+    $quantum_config = $::fuel_settings['quantum_settings']
+    
   } else {
     $quantum_config = {}
     $novanetwork_params  = $::fuel_settings['novanetwork_parameters']
@@ -66,10 +70,14 @@ class osnailyfacter::cluster_ha {
   }
   $rabbit_user = $rabbit_hash['user']
 
-  if ! $::use_quantum {
-    $floating_ips_range = $::fuel_settings['floating_network_range']
-  }
-  $floating_hash = {}
+
+  # Removed for Contrail
+  # if ! $::use_quantum {
+  #   $floating_ips_range = $::fuel_settings['floating_network_range']
+  # }
+  # $floating_hash = {}
+  # Removed for Contrail
+
 
   ##CALCULATED PARAMETERS
 
@@ -201,7 +209,7 @@ class osnailyfacter::cluster_ha {
   #HARDCODED PARAMETERS
 
   $multi_host              = true
-  $quantum_netnode_on_cnt  = true
+  $quantum_netnode_on_cnt  = false # changed to false for Contrail
   $mirror_type = 'external'
   Exec { logoutput => true }
 
@@ -216,12 +224,12 @@ class osnailyfacter::cluster_ha {
       controller_internal_addresses => $controller_internal_addresses,
       internal_address              => $internal_address,
       public_interface              => $::public_int,
-      private_interface             => $::use_quantum ? { true=>false, default=>$::fuel_settings['fixed_interface']},
+      private_interface             => $::use_contrail ? { true=>false, default=>$::fuel_settings['fixed_interface']},
       internal_virtual_ip           => $::fuel_settings['management_vip'],
       public_virtual_ip             => $::fuel_settings['public_vip'],
       primary_controller            => $primary_controller,
-      floating_range                => $::use_quantum ? { true=>$floating_hash, default=>false},
-      fixed_range                   => $::use_quantum ? { true=>false, default=>$::fuel_settings['fixed_network_range']},
+      floating_range                => false, #$::use_contrail ? { true=>$floating_hash, default=>false},
+      fixed_range                   => $::use_contrail ? { true=>false, default=>$::fuel_settings['fixed_network_range']},
       multi_host                    => $multi_host,
       network_manager               => $network_manager,
       num_networks                  => $num_networks,
@@ -254,10 +262,10 @@ class osnailyfacter::cluster_ha {
       glance_backend                => $glance_backend,
       swift_proxies                 => $swift_proxies,
       rgw_balancers                 => $rgw_balancers,
-      quantum                       => $::use_quantum,
+      quantum                       => $::use_contrail,
       quantum_config                => $quantum_config,
-      quantum_network_node          => $::use_quantum,
-      quantum_netnode_on_cnt        => $::use_quantum,
+      quantum_network_node          => $::use_contrail,
+      quantum_netnode_on_cnt        => $::use_contrail,
       cinder                        => true,
       cinder_user_password          => $cinder_hash[user_password],
       cinder_iscsi_bind_addr        => $cinder_iscsi_bind_addr,
@@ -292,7 +300,7 @@ class osnailyfacter::cluster_ha {
 
 
   case $::fuel_settings['role'] {
-    /controller/ : {
+    'controller', 'primary-controller' : {
       include osnailyfacter::test_controller
 
       class { '::cluster': stage => 'corosync_setup' } ->
@@ -349,7 +357,7 @@ class osnailyfacter::cluster_ha {
       nova_config { 'DEFAULT/use_cow_images':            value => $::fuel_settings['use_cow_images'] }
       nova_config { 'DEFAULT/compute_scheduler_driver':  value => $::fuel_settings['compute_scheduler_driver'] }
 
-      if ! $::use_quantum {
+      if !$::use_contrail {
         nova_floating_range{ $floating_ips_range:
           ensure          => 'present',
           pool            => 'nova',
@@ -433,10 +441,10 @@ class osnailyfacter::cluster_ha {
 
       class { 'openstack::compute':
         public_interface       => $::public_int,
-        private_interface      => $::use_quantum ? { true=>false, default=>$::fuel_settings['fixed_interface'] },
+        private_interface      => $::use_contrail ? { true=>false, default=>$::fuel_settings['fixed_interface'] },
         internal_address       => $internal_address,
         libvirt_type           => $::fuel_settings['libvirt_type'],
-        fixed_range            => $::use_quantum ? { true=>false, default=>$::fuel_settings['fixed_network_range']},
+        fixed_range            => $::use_contrail ? { true=>false, default=>$::fuel_settings['fixed_network_range']},
         network_manager        => $network_manager,
         network_config         => $network_config,
         multi_host             => $multi_host,
@@ -465,7 +473,7 @@ class osnailyfacter::cluster_ha {
         cinder_user_password   => $cinder_hash[user_password],
         cinder_db_password     => $cinder_hash[db_password],
         db_host                => $::fuel_settings['management_vip'],
-        quantum                => $::use_quantum,
+        quantum                => $::use_contrail,
         quantum_config         => $quantum_config,
         use_syslog             => true,
         syslog_log_level       => $syslog_log_level,
@@ -474,7 +482,7 @@ class osnailyfacter::cluster_ha {
         syslog_log_facility_cinder => $syslog_log_facility_cinder,
         nova_rate_limits       => $nova_rate_limits,
         state_path             => $nova_hash[state_path],
-      }
+        }
 
         if ($::use_ceph){
           Class['openstack::compute'] -> Class['ceph']
@@ -539,7 +547,71 @@ class osnailyfacter::cluster_ha {
       notify {"ceph_osd: ${::ceph::osd_devices}": }
       notify {"osd_devices:  ${::osd_devices_list}": }
     } # CEPH-OSD ENDS
+   
+    "sdn-contrail-controller" : {
+      
+      include contrail::common
+      
+      class { 'contrail::controller':
+        collector_ip               => $quantum_config['contrail']['collector_ip'],
+        api_ip                     => $quantum_config['contrail']['api_ip'],
+        host_ip                    => $quantum_config['contrail']['host_ip'],
+        discovery_server_ip        => $quantum_config['contrail']['api_ip'],
+        as_number                  => $quantum_config['contrail']['as_number'],
+        admin_user                 => $::fuel_settings['access']['user'],
+        admin_pass                 => $::fuel_settings['access']['password'],
+        quantum_user               => $quantum_config['keystone']['admin_user'],
+        quantum_pass               => $quantum_config['keystone']['admin_password'],
+        wan_gateways               => $quantum_config['contrail']['wan_gateways'],
+        encapsulation              => $quantum_config['contrail']['encapsulation'],
+        sdn_controllers_node_names => $quantum_config['contrail']['sdn_controllers_node_names'],
+        sdn_controllers_node_list  => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+      }
+      
+      class { 'contrail::cfgm':
+        service_token           => $quantum_config['keystone']['admin_password'],
+        admin_token             => $quantum_config['keystone']['admin_password'],
+        openstack_controller_ip => $::fuel_settings['management_vip'],
+        quantum_ip              => $::fuel_settings['management_vip'],
+        admin_user              => $::fuel_settings['access']['user'],
+        admin_pass              => $::fuel_settings['access']['password'],
+        quantum_user            => $quantum_config['keystone']['admin_user'],
+        quantum_pass            => $quantum_config['keystone']['admin_password'],
+        keystone_ip             => $::fuel_settings['management_vip'],
+        api_ip                  => $quantum_config['contrail']['host_ip'],
+        ifmap_ip                => $quantum_config['contrail']['ifmap_ip'],
+        discovery_server_ip     => $quantum_config['contrail']['discovery_server_ip'],
+        cassandra_ip            => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        collector_ip            => $quantum_config['contrail']['collector_ip'],
+        zookeeper_ip            => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        sdn_controllers         => $quantum_config['contrail']['sdn_controllers'],
+        host_ip                 => $quantum_config['contrail']['host_ip'],
+      }
+      
+      class { 'contrail::database':
+        host_ip                 => $quantum_config['contrail']['host_ip'],
+        discovery_server_ip     => $quantum_config['contrail']['api_ip'],
+      }
+      
+      class { 'contrail::webui':
+        database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        api_ip                  => $quantum_config['contrail']['api_ip'],
+        glance_ip               => $::fuel_settings['management_vip'],
+        nova_ip                 => $::fuel_settings['management_vip'],
+        keystone_ip             => $::fuel_settings['management_vip'],
+        cinder_ip               => $quantum_config['contrail']['cinder_ip'],
+        collector_ip            => $quantum_config['contrail']['collector_ip'],
+        master_sdn_node_ip      => $quantum_config['contrail']['discovery_server_ip'],
+        local_sdn_node_ip       => $quantum_config['contrail']['host_ip'],
+      }
 
+      class { 'contrail::collector':
+        discovery_server_ip     => $quantum_config['contrail']['discovery_server_ip'],
+        database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        host_ip                 => $quantum_config['contrail']['host_ip'],
+      }
+    }
+    
   } # ROLE CASE ENDS
 
 } # CLUSTER_HA ENDS

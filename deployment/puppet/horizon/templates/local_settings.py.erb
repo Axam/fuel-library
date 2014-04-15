@@ -2,7 +2,7 @@ import os
 
 from django.utils.translation import ugettext_lazy as _
 
-DEBUG = <%= django_debug %>
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 
@@ -175,8 +175,8 @@ LOGGING = {
             }
         }
 }
-LOGIN_URL='<%=  scope.lookupvar("horizon::params::root_url") %>/auth/login/'
-LOGIN_REDIRECT_URL='<%=  scope.lookupvar("horizon::params::root_url") %>'
+#LOGIN_URL='<%=  scope.lookupvar("horizon::params::root_url") %>/auth/login/'
+#LOGIN_REDIRECT_URL='<%=  scope.lookupvar("horizon::params::root_url") %>'
 
 # The Ubuntu package includes pre-compressed JS and compiled CSS to allow
 # offline compression by default.  To enable online compression, install

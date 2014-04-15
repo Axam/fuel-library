@@ -1,0 +1,25 @@
+[DEFAULTS]
+ifmap_server_ip=<%=@api_ip%>
+ifmap_server_port=8443
+ifmap_username=svc-monitor
+ifmap_password=svc-monitor
+api_server_ip=<%=@api_ip%>
+api_server_port=8082
+zk_server_ip=<%= @zookeeper_ip.collect{ |zookeeper| zookeeper+':2181'}.join(',') %>
+log_file=/var/log/contrail/svc-monitor.log
+cassandra_server_list=<% @cassandra_ip.each do |cassandra| -%><%= cassandra %>:9160 <%end-%>
+
+disc_server_ip=<%=@api_ip%>
+disc_server_port=5998
+
+[SECURITY]
+use_certs=False
+keyfile=/etc/contrail/ssl/private_keys/svc_monitor_key.pem
+certfile=/etc/contrail/ssl/certs/svc_monitor.pem
+ca_certs=/etc/contrail/ssl/certs/ca.pem
+
+[KEYSTONE]
+auth_host=<%=@keystone_ip%>
+admin_user=<%=@admin_user%>
+admin_password=<%=@admin_pass%>
+admin_tenant_name=admin

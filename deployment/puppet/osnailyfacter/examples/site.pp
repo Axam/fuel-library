@@ -5,6 +5,7 @@ $openstack_version = {
   'glance'     => 'latest',
   'horizon'    => 'latest',
   'nova'       => 'latest',
+  'contrail'   => '2013.1-386',
   'novncproxy' => 'latest',
   'cinder'     => 'latest',
 }
@@ -46,7 +47,9 @@ if $::fuel_settings['nodes'] {
   $syslog_hash          = $::fuel_settings['syslog']
 
 
-  $use_quantum = $::fuel_settings['quantum']
+  $use_quantum =  $::fuel_settings['quantum']
+  $use_contrail = $::fuel_settings['contrail']
+  
   if (!empty(filter_nodes($::fuel_settings['nodes'], 'role', 'ceph-osd')) or
     $::fuel_settings['storage']['volumes_ceph'] or
     $::fuel_settings['storage']['images_ceph'] or
@@ -68,6 +71,19 @@ if $::fuel_settings['nodes'] {
     $public_netmask = get_network_role_property('ex', 'netmask')
     $storage_address = get_network_role_property('storage', 'ipaddr')
     $storage_netmask = get_network_role_property('storage', 'netmask')
+  } elsif $use_contrail {
+    # $internal_br = $node[0]['internal_br']
+    $internal_int = $::fuel_settings['management_interface']
+    $internal_address = $node[0]['internal_address']
+    $internal_netmask = $node[0]['internal_netmask']
+    
+    # $public_br = $node[0]['public_br']
+    $public_int   = $::fuel_settings['public_interface']
+    $public_address = $node[0]['public_address']
+    $public_netmask = $node[0]['public_netmask']
+    
+    $storage_address = $node[0]['storage_address']
+    $storage_netmask = $node[0]['storage_netmask']
   } else {
     $internal_address = $node[0]['internal_address']
     $internal_netmask = $node[0]['internal_netmask']
@@ -144,9 +160,11 @@ case $::operatingsystem {
 
 class os_common {
   class {"l23network::hosts_file": stage => 'netconfig', nodes => $nodes_hash }
-  class {'l23network': use_ovs=>$use_quantum, stage=> 'netconfig'}
+  class {'l23network': use_ovs=>false, stage=> 'netconfig'}
   if $use_quantum {
       class {'advanced_node_netconfig': stage => 'netconfig' }
+  } elsif $use_contrail {
+      class {'osnailyfacter::network_setup': stage => 'netconfig'}
   } else {
       class {'osnailyfacter::network_setup': stage => 'netconfig'}
   }

@@ -176,7 +176,7 @@ class openstack::compute (
     value => $memcached_addresses
   }
   class { 'nova':
-      ensure_package       => $::openstack_version['nova'],
+      ensure_package       => $::openstack_version['contrail'],
       sql_connection       => $sql_connection,
       queue_provider       => $queue_provider,
       rabbit_nodes         => $rabbit_nodes,
@@ -205,7 +205,7 @@ class openstack::compute (
 
   # Install / configure nova-compute
   class { '::nova::compute':
-    ensure_package                => $::openstack_version['nova'],
+    ensure_package                => $::openstack_version['contrail'],
     enabled                       => $enabled,
     vnc_enabled                   => $vnc_enabled,
     vncserver_proxyclient_address => $internal_address,
@@ -250,7 +250,7 @@ class openstack::compute (
 
   # configure nova api
   class { 'nova::api':
-    ensure_package    => $::openstack_version['nova'],
+    ensure_package    => $::openstack_version['contrail'],
     enabled           => true,
     admin_tenant_name => 'services',
     admin_user        => 'nova',
@@ -322,28 +322,78 @@ class openstack::compute (
     # if ! $quantum_user_password {
     #   fail('quantum user password must be set when quantum is configured')
     # }
-
-    class { '::quantum':
-      quantum_config  => $quantum_config,
-      verbose         => $verbose,
-      debug           => $debug,
-      use_syslog           => $use_syslog,
-      syslog_log_level     => $syslog_log_level,
-      syslog_log_facility  => $syslog_log_facility_quantum,
+   if $::fuel_settings['deployment_mode'] == 'multinode' {
+    class { 'contrail::vrouter':
+       discovery_server_ip         => $quantum_config['contrail']['api_ip'],
+       control_instances_number    => $quantum_config['contrail']['control_instances_number'],
+       collector_ip                => $quantum_config['contrail']['collector_ip'],
+       api_ip                      => $quantum_config['contrail']['api_ip'],
+       vrouter_ip                  => $quantum_config['contrail']['vrouter_ip'],
+       vrouter_dec_mask            => $quantum_config['contrail']['vrouter_dec_mask'],
+       vrouter_prefix              => $quantum_config['contrail']['vrouter_prefix'],
+       vrouter_ifname              => $quantum_config['contrail']['vrouter_ifname'],
+       vrouter_hwaddr              => $quantum_config['contrail']['vrouter_hwaddr'],
+       host_ip                     => $quantum_config['contrail']['host_ip'],
+       # gateway_ip                  => $quantum_config['contrail'][],
+       # dns                         => $quantum_config['contrail']['dns'],
+       admin_user                  => $::fuel_settings['access']['user'],
+       admin_pass                  => $::fuel_settings['access']['password'],
+       quantum_user                => $quantum_config['keystone']['admin_user'],
+       quantum_pass                => $quantum_config['keystone']['admin_password'],
+       service_token               => $quantum_config['contrail']['admin_password'],
+       quantum_ip                  => $quantum_config['contrail']['quantum_ip'],
+       openstack_controller_ip     => $quantum_config['contrail']['quantum_ip'],
+       admin_token                 => $quantum_config['keystone']['admin_password'],
+       host_ip_list                => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+       keystone_ip                 => $quantum_config['contrail']['keystone_ip'],
+     } 
+    }
+   else {
+       class { 'contrail::vrouter':
+       discovery_server_ip         => $quantum_config['contrail']['api_ip'],
+       control_instances_number    => $quantum_config['contrail']['control_instances_number'],
+       collector_ip                => $quantum_config['contrail']['collector_ip'],
+       api_ip                      => $quantum_config['contrail']['api_ip'],
+       vrouter_ip                  => $quantum_config['contrail']['vrouter_ip'],
+       vrouter_dec_mask            => $quantum_config['contrail']['vrouter_dec_mask'],
+       vrouter_prefix              => $quantum_config['contrail']['vrouter_prefix'],
+       vrouter_ifname              => $quantum_config['contrail']['vrouter_ifname'],
+       vrouter_hwaddr              => $quantum_config['contrail']['vrouter_hwaddr'],
+       host_ip                     => $quantum_config['contrail']['host_ip'],
+       admin_user                  => $::fuel_settings['access']['user'],
+       admin_pass                  => $::fuel_settings['access']['password'],
+       quantum_user                => $quantum_config['keystone']['admin_user'],
+       quantum_pass                => $quantum_config['keystone']['admin_password'],
+       service_token               => $quantum_config['contrail']['admin_password'],
+       quantum_ip                  => $quantum_config['contrail']['quantum_ip'],
+       openstack_controller_ip     => $quantum_config['contrail']['quantum_ip'],
+       admin_token                 => $quantum_config['keystone']['admin_password'],
+       host_ip_list                => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+       keystone_ip                 => $::fuel_settings['management_vip'],
+      } 
     }
 
-    #todo: Quantum plugin and database connection not need on compute.
-    class { 'quantum::plugins::ovs':
-      quantum_config  => $quantum_config
-    }
 
-    class { 'quantum::agents::ovs':
-      quantum_config   => $quantum_config,
-      # bridge_uplinks   => ["br-prv:${private_interface}"],
-      # bridge_mappings  => ['physnet2:br-prv'],
-      # enable_tunneling => $enable_tunneling,
-      # local_ip         => $internal_address,
-    }
+      # quantum_config  => $quantum_config,
+  #     verbose         => $verbose,
+  #     debug           => $debug,
+  #     use_syslog           => $use_syslog,
+  #     syslog_log_level     => $syslog_log_level,
+  #     syslog_log_facility  => $syslog_log_facility_quantum,
+  #   }
+  # 
+  #   #todo: Quantum plugin and database connection not need on compute.
+  #   class { 'quantum::plugins::ovs':
+  #     quantum_config  => $quantum_config
+  #   }
+  # 
+  #   class { 'quantum::agents::ovs':
+  #     quantum_config   => $quantum_config,
+  #     # bridge_uplinks   => ["br-prv:${private_interface}"],
+  #     # bridge_mappings  => ['physnet2:br-prv'],
+  #     # enable_tunneling => $enable_tunneling,
+  #     # local_ip         => $internal_address,
+  #   }
 
 
     # script called by qemu needs to manipulate the tap device
@@ -353,7 +403,7 @@ class openstack::compute (
       source => 'puppet:///modules/nova/libvirt_qemu.conf',
     }
 
-    class { 'nova::compute::quantum': }
+    # class { 'nova::compute::quantum': }
 
     # does this have to be installed on the compute node?
     # NOTE
@@ -363,9 +413,12 @@ class openstack::compute (
     }
 
     nova_config {
-      'linuxnet_interface_driver':       value => 'nova.network.linux_net.LinuxOVSInterfaceDriver';
-      'linuxnet_ovs_integration_bridge': value => $quantum_config['L2']['integration_bridge'];
+       'DEFAULT/libvirt_vif_driver':       value => 'nova.virt.libvirt.vif.VRouterVIFDriver';
+       'DEFAULT/firewall_driver':          value => 'nova.virt.libvirt.firewall.IptablesFirewallDriver';
     }
+    
+
+    
   }
 }
 

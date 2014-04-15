@@ -1,0 +1,10 @@
+<config>
+    <agent>
+       
+        <vhost>
+            <name>vhost0</name>
+            <ip-address><%=@vrouter_ip %>/<%=@vrouter_prefix %></ip-address><gateway><%= @gateway_ip %></gateway></vhost>
+        <eth-port>
+            <name><%=@vrouter_ifname %></name></eth-port>
+        <discovery-server><ip-address>127.0.0.1</ip-address><control-instances><%=@control_instances_number %></control-instances></discovery-server><control><ip-address><%=@vrouter_ip %></ip-address></control></agent>
+</config>
