@@ -1,0 +1,10 @@
+#Contrail vhost0
+DEVICE=vhost0
+ONBOOT=yes
+BOOTPROTO=none
+IPV6INIT=no
+USERCTL=yes
+NM_CONTROLLED=no
+IPADDR=<%=@vrouter_ip%>
+NETMASK=<%=@vrouter_dec_mask%>
+SUBCHANNELS=1,2,3

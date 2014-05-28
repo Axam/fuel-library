@@ -1,0 +1,32 @@
+
+[DEFAULT]
+lock_path = $state_path/lock
+bind_host = 0.0.0.0
+bind_port = 9696
+api_paste_config = api-paste.ini
+control_exchange = quantum
+notification_driver = quantum.openstack.common.notifier.rpc_notifier
+default_notification_level = INFO
+notification_topics = notifications
+rpc_backend = quantum.openstack.common.rpc.impl_qpid
+qpid_hostname = localhost
+core_plugin = quantum.plugins.contrail.ContrailPlugin.ContrailPlugin
+log_format = %(asctime)s.%(msecs)d %(levelname)8s [%(name)s] %(message)s
+
+[QUOTAS]
+quota_network = -1
+quota_subnet = -1
+quota_port = -1
+
+[DEFAULT_SERVICETYPE]
+
+[AGENT]
+[keystone_authtoken]
+auth_host = <%=@keystone_ip%>
+auth_port = 35357
+auth_protocol = http
+admin_tenant_name = <%=@quantum_admin_tenant_name%>
+admin_user = <%=@quantum_admin_user%>
+admin_password = <%=@quantum_admin_password%>
+signing_dir = /var/lib/quantum/keystone-signing
+

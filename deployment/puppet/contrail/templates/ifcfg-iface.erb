@@ -1,0 +1,12 @@
+#Contrail <%=@vrouter_ifname%>
+TYPE=Ethernet
+ONBOOT=yes
+BOOTPROTO=none
+DEVICE=<%=@vrouter_ifname%>
+USERCTL=yes
+NM_CONTROLLED=no
+<% if @vrouter_ifname =~ /.*\..*/ %>
+VLAN=yes
+<% else %>
+HWADDR=<%=@vrouter_hwaddr%>
+<% end %>
