@@ -32,18 +32,18 @@ class nova::compute(
     'DEFAULT/vncserver_proxyclient_address': value => $vncserver_proxyclient_address;
   }
 
-  package { 'bridge-utils':
-    ensure => present,
-    before => Nova::Generic_service['compute'],
-  }
+  #package { 'bridge-utils':
+  #  ensure => present,
+  #  before => Nova::Generic_service['compute'],
+  #}
 
-  nova::generic_service { 'compute':
-    enabled        => $enabled,
-    package_name   => $::nova::params::compute_package_name,
-    service_name   => $::nova::params::compute_service_name,
-    ensure_package => $ensure_package,
-    before         => Exec['networking-refresh']
-  }
+  #nova::generic_service { 'compute':
+  #  enabled        => $enabled,
+  #  package_name   => $::nova::params::compute_package_name,
+  #  service_name   => $::nova::params::compute_service_name,
+  #  ensure_package => $ensure_package,
+  #  before         => Exec['networking-refresh']
+  #}
 
   if $virtio_nic {
     # Enable the virtio network card for instances

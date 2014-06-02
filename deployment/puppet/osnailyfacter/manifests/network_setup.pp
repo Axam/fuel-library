@@ -4,17 +4,19 @@ define setup_main_interfaces (
 ) {
   # Detect main interfaces, except bondXXX/brXXX/vlanXXX, XXX - pos int numbers with 0
   if $interface =~ /^(?!bond|br|vlan)\w+\d+$/ {
-    if ! defined(L23network::L3::Ifconfig[$interface]) {
-      $ipaddr = $network_settings[$interface]['ipaddr']
-      $gateway = $network_settings[$interface]['gateway']
-      # TODO implement bond slaves options support
-      #$bond_master = $network_settings[$interface]['bond_master']
-      notify{"${interface} => ${ipaddr}, ${gateway}":} ->
-      l23network::l3::ifconfig{$interface:
-        ipaddr        => $ipaddr,
-        gateway       => $gateway,
-        #bond_master   => $bond_master,
-        check_by_ping => 'none'
+    if $interface != $::fuel_settings['quantum_settings']['contrail']['vrouter_ifname'] {
+      if ! defined(L23network::L3::Ifconfig[$interface]) {
+        $ipaddr = $network_settings[$interface]['ipaddr']
+        $gateway = $network_settings[$interface]['gateway']
+        # TODO implement bond slaves options support
+        #$bond_master = $network_settings[$interface]['bond_master']
+        notify{"${interface} => ${ipaddr}, ${gateway}":} ->
+        l23network::l3::ifconfig{$interface:
+          ipaddr        => $ipaddr,
+          gateway       => $gateway,
+          #bond_master   => $bond_master,
+          check_by_ping => 'none'
+        }
       }
     }
   }
@@ -50,17 +52,19 @@ define setup_sub_interfaces (
 ) {
   # Detect sub interfaces, allow vlanXXX, anythingXXX.YYY (alphanum only, XXX&YYY - pos int numbers with 0)
   if $interface =~ /(^(\w+\d+)(\.)(\d+)$)|(^vlan\d+$)/ {
-    if ! defined(L23network::L3::Ifconfig[$interface]) {
-      $ipaddr = $network_settings[$interface]['ipaddr']
-      $gateway = $network_settings[$interface]['gateway']
-      # TODO implement bond slaves options support
-      #$bond_master = $network_settings[$interface]['bond_master']
-      notify{"${interface} => ${ipaddr}, ${gateway}":} ->
-      l23network::l3::ifconfig{$interface:
-        ipaddr        => $ipaddr,
-        gateway       => $gateway,
-        #bond_master   => $bond_master,
-        check_by_ping => 'none'
+    if $interface != $::fuel_settings['quantum_settings']['contrail']['vrouter_ifname'] {
+      if ! defined(L23network::L3::Ifconfig[$interface]) {
+        $ipaddr = $network_settings[$interface]['ipaddr']
+        $gateway = $network_settings[$interface]['gateway']
+        # TODO implement bond slaves options support
+        #$bond_master = $network_settings[$interface]['bond_master']
+        notify{"${interface} => ${ipaddr}, ${gateway}":} ->
+        l23network::l3::ifconfig{$interface:
+          ipaddr        => $ipaddr,
+          gateway       => $gateway,
+          #bond_master   => $bond_master,
+          check_by_ping => 'none'
+        }
       }
     }
   }
