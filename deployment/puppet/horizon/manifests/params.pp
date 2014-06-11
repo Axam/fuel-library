@@ -27,7 +27,7 @@ class horizon::params {
     'Debian': {
       $http_service              = 'apache2'
       $vhosts_file               = '/etc/apache2/sites-available/openstack-dashboard.conf'
-      $local_settings_path       = '/etc/openstack-dashboard/local_settings.py'
+      $local_settings_path       = '/etc/openstack_dashboard/local_settings.py'
       $httpd_listen_config_file  = '/etc/apache2/ports.conf'
       $http_modwsgi              = 'libapache2-mod-wsgi'
       $root_url                  = '/horizon'

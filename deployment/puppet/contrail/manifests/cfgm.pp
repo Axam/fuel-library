@@ -22,11 +22,11 @@ class contrail::cfgm (
 
   package {
     'python-novaclient':
-      ensure => '2.10.0-300';
+      ensure => '2.16.0-2';
     'python-keystoneclient':
-      ensure => '0.2.1-300';
-    'python-quantumclient':
-      ensure => '2.1.1-300';
+      ensure => '0.4.1-4';
+    'python-neutronclient':
+      ensure => '2.16.0-2';
     'contrail-api-lib':
       ensure => installed;
     'contrail-api-extension':
@@ -80,7 +80,7 @@ class contrail::cfgm (
       owner   => root,
       group   => root,
       require => [
-        Package['contrail-config','python-novaclient','python-keystoneclient','python-quantumclient','python-quantumclient'],
+        Package['contrail-config','python-novaclient','python-keystoneclient','python-neutronclient'],
         Exec['create-python-analytics-env']
        ],
       content => template('/etc/puppet/modules/contrail/templates/ctrl-details-cfgm.erb');
