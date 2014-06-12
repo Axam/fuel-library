@@ -5,7 +5,7 @@ $openstack_version = {
   'glance'     => 'latest',
   'horizon'    => 'latest',
   'nova'       => 'latest',
-  'contrail'   => 'latest',
+  'contrail'   => '2013.2-1.05.215m1',
   'novncproxy' => 'latest',
   'cinder'     => 'latest',
 }
