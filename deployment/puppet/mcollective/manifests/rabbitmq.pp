@@ -102,23 +102,23 @@ class mcollective::rabbitmq (
   }
 
   exec { 'create-mcollective-directed-exchange':
-    command   => "curl -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
+    command   => "sleep 10; curl -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
       -d'{\"type\":\"direct\",\"durable\":true}' http://localhost:${management_port}/api/exchanges/${actual_vhost}/mcollective_directed",
     logoutput => true,
     require   => [Service['rabbitmq-server'], Rabbitmq_user_permissions["${user}@${actual_vhost}"]],
     path      => '/bin:/usr/bin:/sbin:/usr/sbin',
     tries     => 10,
-    try_sleep => 3,
+    try_sleep => 7,
   }
 
   exec { 'create-mcollective-broadcast-exchange':
-    command   => "curl -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
+    command   => "sleep 10; curl -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
       -d'{\"type\":\"topic\",\"durable\":true}' http://localhost:${management_port}/api/exchanges/${actual_vhost}/mcollective_broadcast",
     logoutput => true,
     require   => [Service['rabbitmq-server'], Rabbitmq_user_permissions["${user}@${actual_vhost}"]],
     path      => '/bin:/usr/bin:/sbin:/usr/sbin',
     tries     => 10,
-    try_sleep => 3,
+    try_sleep => 7,
   }
 
 }
