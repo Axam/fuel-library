@@ -202,20 +202,23 @@ class openstack::nova::controller (
     # Set up Quantum
     #todo: move to ::openstack:controller and ::openstack:neutron_router
     #todo: from HERE to <<<
-    class { '::neutron::server':
-      neutron_config     => $quantum_config,
-      primary_controller => $primary_controller
+      if $ha_mode {
+      $q_bind_host = $quantum_config['contrail']['host_ip']
+    } else {
+      $q_bind_host = '0.0.0.0'
     }
-    if $quantum and !$quantum_network_node {
-      class { '::neutron':
-        neutron_config       => $quantum_config,
-        verbose              => $verbose,
-        debug                => $debug,
-        use_syslog           => $use_syslog,
-        syslog_log_facility  => $syslog_log_facility_neutron,
-        syslog_log_level     => $syslog_log_level,
-        server_ha_mode       => $ha_mode,
-      }
+    class { 'contrail::quantum':
+      quantum_config     => $quantum_config,
+      rabbit_user        => $rabbit_user,
+      rabbit_password    => $rabbit_password,
+      rabbit_hosts       => $rabbit_hosts,
+      auth_host          => $keystone_host,
+      admin_password     => $quantum_config['keystone']['admin_password'],
+      bind_host          => $q_bind_host
+      # bind_host => $server_ha_mode ? {
+      #   true     => $quantum_config['contrail']['host_ip'],
+      #   default  => '0.0.0.0',
+      # }
     }
     #todo: <<<
     class { '::nova::network::neutron':

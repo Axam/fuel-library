@@ -138,29 +138,31 @@ class openstack::controller_ha (
       nameservers                  => $nameservers,
     }
 
-    if $quantum and $quantum_network_node {
-      class { '::openstack::neutron_router':
-        #service_endpoint      => $internal_virtual_ip,
-        #auth_host             => $internal_virtual_ip,
-        #nova_api_vip          => $internal_virtual_ip,
-        #private_interface     => $private_interface,
-        #segment_range         => $segment_range,
-        #internal_address      => $internal_address,
-        #public_interface      => $public_interface,
-        #create_networks       => $create_networks,
-        verbose               => $verbose,
-        debug                 => $debug,
-        neutron               => $quantum,
-        neutron_config        => $quantum_config,
-        neutron_network_node  => $quantum_network_node,
-        #neutron_netnode_on_cnt=> $quantum_netnode_on_cnt,
-        service_provider      => $ha_provider,
-        use_syslog            => $use_syslog,
-        syslog_log_level      => $syslog_log_level,
-        syslog_log_facility   => $syslog_log_facility_neutron,
-        ha_mode               => $ha_mode,
-      }
-    }
+#    Removed for Contrail
+#
+#    if $quantum and $quantum_network_node {
+#      class { '::openstack::neutron_router':
+#        #service_endpoint      => $internal_virtual_ip,
+#        #auth_host             => $internal_virtual_ip,
+#        #nova_api_vip          => $internal_virtual_ip,
+#        #private_interface     => $private_interface,
+#        #segment_range         => $segment_range,
+#        #internal_address      => $internal_address,
+#        #public_interface      => $public_interface,
+#        #create_networks       => $create_networks,
+#        verbose               => $verbose,
+#        debug                 => $debug,
+#        neutron               => $quantum,
+#        neutron_config        => $quantum_config,
+#        neutron_network_node  => $quantum_network_node,
+#        #neutron_netnode_on_cnt=> $quantum_netnode_on_cnt,
+#        service_provider      => $ha_provider,
+#        use_syslog            => $use_syslog,
+#        syslog_log_level      => $syslog_log_level,
+#        syslog_log_facility   => $syslog_log_facility_neutron,
+#        ha_mode               => $ha_mode,
+#      }
+#    }
 
     class { 'openstack::auth_file':
       admin_user              => $admin_user,
