@@ -102,7 +102,7 @@ class mcollective::rabbitmq (
   }
 
   exec { 'create-mcollective-directed-exchange':
-    command   => "sleep 10; curl -L -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
+    command   => "curl -L -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
       -d'{\"type\":\"direct\",\"durable\":true}' http://localhost:${management_port}/api/exchanges/${actual_vhost}/mcollective_directed",
     logoutput => true,
     require   => [Service['rabbitmq-server'], Rabbitmq_user_permissions["${user}@${actual_vhost}"]],
@@ -112,7 +112,7 @@ class mcollective::rabbitmq (
   }
 
   exec { 'create-mcollective-broadcast-exchange':
-    command   => "sleep 10; curl -L -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
+    command   => "curl -L -i -u ${user}:${password} -H \"content-type:application/json\" -XPUT \
       -d'{\"type\":\"topic\",\"durable\":true}' http://localhost:${management_port}/api/exchanges/${actual_vhost}/mcollective_broadcast",
     logoutput => true,
     require   => [Service['rabbitmq-server'], Rabbitmq_user_permissions["${user}@${actual_vhost}"]],
