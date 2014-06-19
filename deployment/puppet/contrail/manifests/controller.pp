@@ -90,7 +90,7 @@ class contrail::controller (
   # }
  
   define createCTRL() {
-    $ctrl_ip = $quantum_config['contrail']["sdn_controller_${name}"]
+    $ctrl_ip = $neutron_config['contrail']["sdn_controller_${name}"]
     exec { "create-control-$name":
       command  => "/usr/bin/python /opt/contrail/utils/provision_control.py --api_server_ip ${api_ip} --api_server_port 8082 --oper add --host_name ${name} --host_ip ${ctrl_ip} --router_asn ${as_number} --admin_user ${quantum_user} --admin_password ${quantum_pass} --admin_tenant_name services && touch /etc/contrail/ctrl-provision-${name}.done",
       require  => [File['/etc/contrail/control_param'], Service['supervisor-config'], Service['supervisor-control'], Exec['wait_for_supervisor-config']],
@@ -111,7 +111,7 @@ class contrail::controller (
   }
 
   define addMX() {
-    $mx_ip = $quantum_config['contrail']["wan_gateways_${name}"]
+    $mx_ip = $neutron_config['contrail']["wan_gateways_${name}"]
     exec {"createMX$name":
       command  => "/usr/bin/python /opt/contrail/utils/provision_mx.py  --api_server_ip ${api_ip} --api_server_port 8082 --oper add --router_name ${name} --router_ip ${mx_ip} --router_asn ${as_number} --admin_user ${quantum_user} --admin_password ${quantum_pass} --admin_tenant_name services && touch /etc/contrail/mx-${name}-provision.done",
       provider => 'shell',
