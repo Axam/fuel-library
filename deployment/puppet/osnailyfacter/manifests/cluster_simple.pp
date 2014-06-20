@@ -458,60 +458,60 @@ class osnailyfacter::cluster_simple {
       include contrail::common
       
       class { 'contrail::controller':
-        collector_ip               => $neutron_config['contrail']['collector_ip'],
-        api_ip                     => $neutron_config['contrail']['api_ip'],
-        host_ip                    => $neutron_config['contrail']['host_ip'],
-        discovery_server_ip        => $neutron_config['contrail']['api_ip'],
-        as_number                  => $neutron_config['contrail']['as_number'],
+        collector_ip               => $quantum_config['contrail']['collector_ip'],
+        api_ip                     => $quantum_config['contrail']['api_ip'],
+        host_ip                    => $quantum_config['contrail']['host_ip'],
+        discovery_server_ip        => $quantum_config['contrail']['api_ip'],
+        as_number                  => $quantum_config['contrail']['as_number'],
         admin_user                 => $::fuel_settings['access']['user'],
         admin_pass                 => $::fuel_settings['access']['password'],
-        quantum_user               => $neutron_config['keystone']['admin_user'],
-        quantum_pass               => $neutron_config['keystone']['admin_password'],
-        wan_gateways               => $neutron_config['contrail']['wan_gateways'],
-        encapsulation              => $neutron_config['contrail']['encapsulation'],
-        sdn_controllers_node_names => $neutron_config['contrail']['sdn_controllers_node_names'],
-        sdn_controllers_node_list  => $neutron_config['contrail']['hosts_ip_list_mgmt'],
+        quantum_user               => $quantum_config['keystone']['admin_user'],
+        quantum_pass               => $quantum_config['keystone']['admin_password'],
+        wan_gateways               => $quantum_config['contrail']['wan_gateways'],
+        encapsulation              => $quantum_config['contrail']['encapsulation'],
+        sdn_controllers_node_names => $quantum_config['contrail']['sdn_controllers_node_names'],
+        sdn_controllers_node_list  => $quantum_config['contrail']['hosts_ip_list_mgmt'],
       }
       
       class { 'contrail::cfgm':
-        service_token           => $neutron_config['keystone']['admin_password'],
-        admin_token             => $neutron_config['keystone']['admin_password'],
-        openstack_controller_ip => $neutron_config['contrail']['openstack_controller_ip'],
-        quantum_ip              => $neutron_config['contrail']['quantum_ip'],
+        service_token           => $quantum_config['keystone']['admin_password'],
+        admin_token             => $quantum_config['keystone']['admin_password'],
+        openstack_controller_ip => $quantum_config['contrail']['openstack_controller_ip'],
+        quantum_ip              => $quantum_config['contrail']['quantum_ip'],
         admin_user              => $::fuel_settings['access']['user'],
         admin_pass              => $::fuel_settings['access']['password'],
-        quantum_user            => $neutron_config['keystone']['admin_user'],
-        quantum_pass            => $neutron_config['keystone']['admin_password'],
-        keystone_ip             => $neutron_config['contrail']['keystone_ip'],
-        api_ip                  => $neutron_config['contrail']['api_ip'],
-        ifmap_ip                => $neutron_config['contrail']['ifmap_ip'],
-        discovery_server_ip     => $neutron_config['contrail']['api_ip'],
-        cassandra_ip            => $neutron_config['contrail']['hosts_ip_list_mgmt'],
-        collector_ip            => $neutron_config['contrail']['collector_ip'],
-        zookeeper_ip            => $neutron_config['contrail']['hosts_ip_list_mgmt'],
-        sdn_controllers         => $neutron_config['contrail']['sdn_controllers'],
-        host_ip                 => $neutron_config['contrail']['host_ip'],
+        quantum_user            => $quantum_config['keystone']['admin_user'],
+        quantum_pass            => $quantum_config['keystone']['admin_password'],
+        keystone_ip             => $quantum_config['contrail']['keystone_ip'],
+        api_ip                  => $quantum_config['contrail']['api_ip'],
+        ifmap_ip                => $quantum_config['contrail']['ifmap_ip'],
+        discovery_server_ip     => $quantum_config['contrail']['api_ip'],
+        cassandra_ip            => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        collector_ip            => $quantum_config['contrail']['collector_ip'],
+        zookeeper_ip            => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        sdn_controllers         => $quantum_config['contrail']['sdn_controllers'],
+        host_ip                 => $quantum_config['contrail']['host_ip'],
       }
       
       class { 'contrail::database':
-        host_ip                 => $neutron_config['contrail']['host_ip'],
-        discovery_server_ip     => $neutron_config['contrail']['api_ip'],
+        host_ip                 => $quantum_config['contrail']['host_ip'],
+        discovery_server_ip     => $quantum_config['contrail']['api_ip'],
       }
       
       class { 'contrail::webui':
-        database_ip             => $neutron_config['contrail']['hosts_ip_list_mgmt'],
-        api_ip                  => $neutron_config['contrail']['api_ip'],
-        glance_ip               => $neutron_config['contrail']['glance_ip'],
-        nova_ip                 => $neutron_config['contrail']['nova_ip'],
-        keystone_ip             => $neutron_config['contrail']['keystone_ip'],
-        cinder_ip               => $neutron_config['contrail']['cinder_ip'],
-        collector_ip            => $neutron_config['contrail']['collector_ip'],
+        database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        api_ip                  => $quantum_config['contrail']['api_ip'],
+        glance_ip               => $quantum_config['contrail']['glance_ip'],
+        nova_ip                 => $quantum_config['contrail']['nova_ip'],
+        keystone_ip             => $quantum_config['contrail']['keystone_ip'],
+        cinder_ip               => $quantum_config['contrail']['cinder_ip'],
+        collector_ip            => $quantum_config['contrail']['collector_ip'],
       }
 
       class { 'contrail::collector':
-        discovery_server_ip     => $neutron_config['contrail']['discovery_server_ip'],
-        database_ip             => $neutron_config['contrail']['hosts_ip_list_mgmt'],
-        host_ip                 => $neutron_config['contrail']['host_ip'],
+        discovery_server_ip     => $quantum_config['contrail']['discovery_server_ip'],
+        database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],
+        host_ip                 => $quantum_config['contrail']['host_ip'],
       }
     }
 

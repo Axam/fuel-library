@@ -203,7 +203,7 @@ class openstack::nova::controller (
     #todo: move to ::openstack:controller and ::openstack:neutron_router
     #todo: from HERE to <<<
       if $ha_mode {
-      $q_bind_host = $neutron_config['contrail']['host_ip']
+      $q_bind_host = $quantum_config['contrail']['host_ip']
     } else {
       $q_bind_host = '0.0.0.0'
     }
@@ -213,10 +213,10 @@ class openstack::nova::controller (
       rabbit_password    => $rabbit_password,
       rabbit_hosts       => $rabbit_hosts,
       auth_host          => $keystone_host,
-      admin_password     => $neutron_config['keystone']['admin_password'],
+      admin_password     => $quantum_config['keystone']['admin_password'],
       bind_host          => $q_bind_host
       # bind_host => $server_ha_mode ? {
-      #   true     => $neutron_config['contrail']['host_ip'],
+      #   true     => $quantum_config['contrail']['host_ip'],
       #   default  => '0.0.0.0',
       # }
     }

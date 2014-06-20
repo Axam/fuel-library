@@ -106,7 +106,7 @@ class contrail::quantum (
   }
   
   contrail_plugin_ini_config {
-    'APISERVER/api_server_ip':             value => $neutron_config['contrail']['api_ip'];
+    'APISERVER/api_server_ip':             value => $quantum_config['contrail']['api_ip'];
     'APISERVER/api_server_port':           value => '8082';
     'APISERVER/multi_tenancy':             value => 'True';
     'KEYSTONE/admin_user':                 value => $admin_user;
