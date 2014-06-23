@@ -12,7 +12,7 @@ class horizon::params {
       $package_name              = 'openstack-dashboard'
       $horizon_additional_packages = ['nodejs', 'nodejs-less', 'python-lesscpy']
       $httpd_listen_config_file  = '/etc/httpd/conf.d/ports.conf'
-      $local_settings_path       = '/etc/openstack_dashboard/local_settings'
+      $local_settings_path       = '/etc/openstack-dashboard/local_settings'
       $root_url                  = '/dashboard'
       $apache_user               = 'apache'
       $apache_group              = 'apache'
@@ -27,7 +27,7 @@ class horizon::params {
     'Debian': {
       $http_service              = 'apache2'
       $vhosts_file               = '/etc/apache2/sites-available/openstack-dashboard.conf'
-      $local_settings_path       = '/etc/openstack_dashboard/local_settings.py'
+      $local_settings_path       = '/etc/openstack-dashboard/local_settings.py'
       $httpd_listen_config_file  = '/etc/apache2/ports.conf'
       $http_modwsgi              = 'libapache2-mod-wsgi'
       $root_url                  = '/horizon'

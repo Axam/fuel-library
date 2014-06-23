@@ -6,7 +6,7 @@ class contrail::database (
     ensure => present
   }
  
-  package { 'contrail-openstack-database-venv':
+  package { 'contrail-database-venv':
     ensure => present
   }
 

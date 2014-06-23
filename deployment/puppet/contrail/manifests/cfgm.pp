@@ -26,7 +26,7 @@ class contrail::cfgm (
     'python-keystoneclient':
       ensure => '0.4.1-4.el6';
     'python-neutronclient':
-      ensure => '2.16.0-2.el6';
+      ensure => '2.3.0-11.05.215m1';
     'contrail-api-lib':
       ensure => installed;
     'contrail-api-extension':

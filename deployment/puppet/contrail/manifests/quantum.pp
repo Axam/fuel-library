@@ -1,5 +1,5 @@
 class contrail::quantum (
-  $quantum_config    = {},
+  $neutron_config    = {},
   $rabbit_user       = undef,
   $rabbit_password   = undef,
   $rabbit_hosts      = undef,
@@ -15,13 +15,13 @@ class contrail::quantum (
   
   package {
     ['openstack-neutron-contrail', 'openstack-neutron']:
-      ensure => '2013.2-1.05.215m1.el6';
+      ensure => '2013.2-1.05.215m1';
     ['contrail-api-lib', 'python-django-compressor', 'python-django-openstack-auth']:
       ensure => present;
     # 'openstack-dashboard':
     #   ensure => '2012.1-243';
     'python-neutronclient':
-      ensure => '2.3.0-11.05.215m1.el6';
+      ensure => '2.3.0-11.05.215m1';
     # 'nodejs':  
     #   ensure => '0.10.4-1.el6';
   }
@@ -32,11 +32,11 @@ class contrail::quantum (
       target  => '/usr/bin/node',
       require => Package['openstack-dashboard', 'nodejs', 'python-neutronclient'],
       notify  => Service['httpd'];
-   '/usr/lib/python2.6/site-packages/openstack_dashboard/local/local_settings.py':
+   '/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py':
       force   => true,
       ensure  => 'link',
-      target  => '/etc/openstack_dashboard/local_settings',
-      require => [Package['openstack-dashboard'], Exec['contrail-dashboard'], File['/etc/openstack_dashboard/local_settings']],
+      target  => '/etc/openstack-dashboard/local_settings',
+      require => [Package['openstack-dashboard'], Exec['contrail-dashboard'], File['/etc/openstack-dashboard/local_settings']],
       notify  => Service['httpd'];
     '/etc/contrail':
       ensure  => directory,
@@ -54,7 +54,7 @@ class contrail::quantum (
   }
   
   file_line { 'local_settings':
-    path    => '/etc/openstack_dashboard/local_settings',
+    path    => '/etc/openstack-dashboard/local_settings',
     require => Exec['contrail-dashboard'],
     line    => 'COMPRESS_ENABLED = False',
     notify  => Service['httpd'];
@@ -121,9 +121,9 @@ class contrail::quantum (
   }
 
   exec { 'contrail-dashboard':
-    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1.noarch",
+    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
     require  => Package['dashboard'],
-    before   => File['/etc/openstack_dashboard/local_settings'],
+    before   => File['/etc/openstack-dashboard/local_settings'],
     path     => '/usr/bin',
   }
   

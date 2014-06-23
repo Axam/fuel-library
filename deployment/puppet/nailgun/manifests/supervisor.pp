@@ -2,6 +2,10 @@ class nailgun::supervisor(
   $venv,
   ) {
 
+  package {'supervisor':
+    ensure  => '3.0a12-0.12.el6',
+  }
+
   file { "/etc/sysconfig/supervisord":
     source => 'puppet:///modules/nailgun/supervisor-sysconfig',
     owner => 'root',

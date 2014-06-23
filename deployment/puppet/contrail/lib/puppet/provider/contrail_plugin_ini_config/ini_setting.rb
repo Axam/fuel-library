@@ -16,7 +16,7 @@ Puppet::Type.type(:contrail_plugin_ini_config).provide(
   end
 
   def file_path
-    '/etc/neutron/plugins/contrail/contrail_plugin.ini'
+    '/etc/neutron/plugins/juniper/contrail/ContrailPlugin.ini'
   end
 
 end
