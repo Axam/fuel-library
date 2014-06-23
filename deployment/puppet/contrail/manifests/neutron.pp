@@ -7,8 +7,8 @@ class contrail::quantum (
   $auth_port         = 35357,
   $auth_protocol     = 'http',
   $admin_tenant_name = 'services',
-  $admin_user        = 'quantum',
-  $admin_password    = 'quantum',
+  $admin_user        = 'neutron',
+  $admin_password    = 'neutron',
   $bind_port         = 9696,
   $bind_host         = '0.0.0.0',
 ){
@@ -85,6 +85,8 @@ class contrail::quantum (
     require => Package['openstack-neutron-contrail'],
     notify => Service['neutron-server']
   }
+
+  Neutron_config => $Quantum_config,
   
   quantum_config {
    'DEFAULT/rpc_backend':                  value => 'neutron.openstack.common.rpc.impl_kombu';
@@ -104,6 +106,8 @@ class contrail::quantum (
    'QUOTAS/quota_subnet':                  value => '-1';
    'QUOTAS/quota_port':                    value => '-1';
   }
+
+  neutron_config => $quantum_config
   
   contrail_plugin_ini_config {
     'APISERVER/api_server_ip':             value => $quantum_config['contrail']['api_ip'];

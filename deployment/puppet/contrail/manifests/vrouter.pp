@@ -27,7 +27,7 @@ class contrail::vrouter (
     ensure => installed,
   }
   package {'supervisor':
-    ensure  => '0.1-1.05.215m1.el6',
+    ensure  => installed,
     before  => Package['contrail-vrouter'],
   }
   

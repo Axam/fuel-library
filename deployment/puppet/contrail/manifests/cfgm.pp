@@ -22,11 +22,11 @@ class contrail::cfgm (
 
   package {
     'python-novaclient':
-      ensure => '2.16.0-2';
+      ensure => '2.16.0-2.el6';
     'python-keystoneclient':
-      ensure => '0.4.1-4';
+      ensure => '0.4.1-4.el6';
     'python-neutronclient':
-      ensure => '2.16.0-2';
+      ensure => '2.16.0-2.el6';
     'contrail-api-lib':
       ensure => installed;
     'contrail-api-extension':

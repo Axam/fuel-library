@@ -126,9 +126,7 @@ class contrail::controller (
   if $wan_gateways != '' and $sdn_controllers_node_list[-1] == $host_ip {
     addMX { $wan_gateways:}
   }
-  
-
-   
+     
   
  if $sdn_controllers_node_list[-1] == $host_ip {
   
