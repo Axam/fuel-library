@@ -208,7 +208,7 @@ class openstack::nova::controller (
       $q_bind_host = '0.0.0.0'
     }
     class { 'contrail::quantum':
-      quantum_config     => $quantum_config,
+      neutron_config     => $quantum_config,
       rabbit_user        => $rabbit_user,
       rabbit_password    => $rabbit_password,
       rabbit_hosts       => $rabbit_hosts,

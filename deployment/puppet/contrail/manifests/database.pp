@@ -5,6 +5,10 @@ class contrail::database (
   package { 'contrail-openstack-database':
     ensure => present
   }
+ 
+  package { 'contrail-openstack-database-venv':
+    ensure => present
+  }
 
   file { 
     '/etc/alternatives/cassandra/cassandra.yaml':
@@ -42,7 +46,7 @@ class contrail::database (
   
   
   exec { 'create-python-database-venv':
-    command  => "source /opt/contrail/database-venv/bin/activate && /opt/contrail/database-venv/bin/pip install /opt/contrail/database-venv/archive/* && touch /etc/contrail/database-venv.done",
+    command  => "source /opt/contrail/database-venv/bin/activate && touch /etc/contrail/database-venv.done",
     require  => Package['contrail-openstack-database'],
     provider => 'shell',
     creates  => '/etc/contrail/database-venv.done';

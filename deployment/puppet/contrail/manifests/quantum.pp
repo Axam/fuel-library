@@ -15,13 +15,13 @@ class contrail::quantum (
   
   package {
     ['openstack-neutron-contrail', 'openstack-neutron']:
-      ensure => '2013.2-1.05.215m1';
+      ensure => '2013.2-1.05.215m1.el6';
     ['contrail-api-lib', 'python-django-compressor', 'python-django-openstack-auth']:
       ensure => present;
     # 'openstack-dashboard':
     #   ensure => '2012.1-243';
     'python-neutronclient':
-      ensure => '2.3.0-11.05.215m1';
+      ensure => '2.3.0-11.05.215m1.el6';
     # 'nodejs':  
     #   ensure => '0.10.4-1.el6';
   }
@@ -77,7 +77,7 @@ class contrail::quantum (
   #    require => Package['openstack-quantum-contrail'];
   # }
   
-  Quantum_config {
+  Neutron_config {
     require => Package['openstack-neutron'],
     notify => Service['neutron-server']
   }
@@ -85,10 +85,8 @@ class contrail::quantum (
     require => Package['openstack-neutron-contrail'],
     notify => Service['neutron-server']
   }
-
-  Neutron_config => $Quantum_config,
   
-  quantum_config {
+  neutron_config {
    'DEFAULT/rpc_backend':                  value => 'neutron.openstack.common.rpc.impl_kombu';
    'DEFAULT/rabbit_userid':                value => $rabbit_user;
    'DEFAULT/rabbit_password':              value => $rabbit_password;
@@ -106,8 +104,6 @@ class contrail::quantum (
    'QUOTAS/quota_subnet':                  value => '-1';
    'QUOTAS/quota_port':                    value => '-1';
   }
-
-  neutron_config => $quantum_config
   
   contrail_plugin_ini_config {
     'APISERVER/api_server_ip':             value => $quantum_config['contrail']['api_ip'];
