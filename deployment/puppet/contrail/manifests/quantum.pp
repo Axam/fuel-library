@@ -93,7 +93,7 @@ class contrail::quantum (
    'DEFAULT/rabbit_hosts':                 value => $rabbit_hosts;
    'DEFAULT/bind_host':                    value => $bind_host;
    'DEFAULT/bind_port':                    value => $bind_port;
-   'DEFAULT/core_plugin':                  value => 'neutron.plugins.contrail.ContrailPlugin.ContrailPlugin';
+   'DEFAULT/core_plugin':                  value => 'neutron.plugins.juniper.contrail.contrailplugin.ContrailPlugin';
    'keystone_authtoken/auth_host':         value => $auth_host;
    'keystone_authtoken/auth_port':         value => $auth_port;
    'keystone_authtoken/auth_protocol':     value => $auth_protocol;

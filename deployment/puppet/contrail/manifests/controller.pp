@@ -61,7 +61,7 @@ class contrail::controller (
       ensure      => running,
       enable      => true,
       require     => File['/etc/contrail/control_param'];
-    'supervisor-dns':
+    'contrail-dns':
       ensure      => running,
       enable      => true,
       require     => File['/etc/contrail/dns_param'];

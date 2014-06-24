@@ -46,7 +46,7 @@ class contrail::cfgm (
     }
 
   file {
-    '/var/lib/zookeeper/data/myid':
+    '/var/lib/zookeeper/myid':
       ensure  => present,
       mode    => '0644',
       owner   => root,
@@ -202,11 +202,11 @@ class contrail::cfgm (
       ensure      => running,
       enable      => true,
       require     =>  [
-        File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/data/myid','/etc/contrail/ctrl-details'],
-        Service['contrail-named','supervisor-dns'],
+        File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
+        Service['contrail-named','contrail-dns'],
         ],
       subscribe   => [
-        File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/data/myid','/etc/contrail/ctrl-details'],
+        File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
         Exec['create-python-api-env']
         ];
     'haproxy':

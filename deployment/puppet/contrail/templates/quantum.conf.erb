@@ -10,7 +10,7 @@ default_notification_level = INFO
 notification_topics = notifications
 rpc_backend = neutron.openstack.common.rpc.impl_qpid
 qpid_hostname = localhost
-core_plugin = neutron.plugins.contrail.ContrailPlugin.ContrailPlugin
+core_plugin = neutron.plugins.juniper.contrail.contrailplugin.ContrailPlugin
 log_format = %(asctime)s.%(msecs)d %(levelname)8s [%(name)s] %(message)s
 
 [QUOTAS]
