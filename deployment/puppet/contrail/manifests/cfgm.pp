@@ -43,6 +43,8 @@ class contrail::cfgm (
       ensure => installed;
     'haproxy':
       ensure => installed;
+    'zookeeper':
+      ensure => installed;
     }
 
   file {
@@ -140,6 +142,7 @@ class contrail::cfgm (
       require => Package['contrail-config'],
       content => template('/etc/puppet/modules/contrail/templates/redis-uve.conf.erb');
     '/etc/zookeeper/zoo.cfg':
+      notify  => Service['zookeeper'],
       ensure  => present,
       mode    => '0644',
       owner   => 'root',
@@ -220,6 +223,10 @@ class contrail::cfgm (
     #   ensure      => running,
     #   enable      => true,
     #   subscribe   => File['/etc/qpidd.conf'];
+    'zookeeper':
+      ensure  => "running",
+      enable  => "true",
+      require => Package["zookeeper"]
   }
 
   firewall {
