@@ -3,10 +3,14 @@ class contrail::common {
   package {
     'supervisor':
       ensure => '0.1-1.05.215m1.el6';
+
     # 'qpid-cpp-server':
     #   ensure => installed,
     #   before => Service[qpidd];
-  }
+
+    'rabbitmq-server':
+      ensure => installed;
+  }  
 
   exec { 
     'create-python-api-env':

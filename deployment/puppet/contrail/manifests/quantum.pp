@@ -18,8 +18,8 @@ class contrail::quantum (
       ensure => '2013.2-1.05.215m1';
     ['contrail-api-lib', 'python-django-compressor', 'python-django-openstack-auth']:
       ensure => present;
-    # 'openstack-dashboard':
-    #   ensure => '2012.1-243';
+     'openstack-dashboard':
+       ensure => '2012.1-243';
     'python-neutronclient':
       ensure => '2.3.0-11.05.215m1';
     # 'nodejs':  
@@ -36,7 +36,7 @@ class contrail::quantum (
       force   => true,
       ensure  => 'link',
       target  => '/etc/openstack-dashboard/local_settings',
-      require => [Package['openstack-dashboard'], Exec['contrail-dashboard'], File['/etc/openstack-dashboard/local_settings']],
+      require => [Package['openstack-dashboard'], File['/etc/openstack-dashboard/local_settings']],
       notify  => Service['httpd'];
     '/etc/contrail':
       ensure  => directory,
@@ -120,12 +120,12 @@ class contrail::quantum (
     enable      => true,
   }
 
-  exec { 'contrail-dashboard':
-    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
-    require  => Package['dashboard'],
-    before   => File['/etc/openstack-dashboard/local_settings'],
-    path     => '/usr/bin',
-  }
+#  exec { 'contrail-dashboard':
+#    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
+#    require  => Package['dashboard'],
+#    before   => File['/etc/openstack-dashboard/local_settings'],
+#    path     => '/usr/bin',
+#  }
   
   # exec { 'contrail-api-lib':
   #   command  => "yum install -d 0 -e 0 -y contrail-api-lib-1.02-243.el6.noarch",
