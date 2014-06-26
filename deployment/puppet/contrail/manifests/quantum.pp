@@ -133,7 +133,7 @@ class contrail::quantum (
 
   exec { 'config-neutron-apiserver':
     notify   => Service['neutron-server'],
-    command  => "/usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_ip $api_ip && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_port 8082 && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER multi_tenancy True",
+    command  => "/usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_ip $quantum_config['contrail']['api_ip'] && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_port 8082 && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER multi_tenancy True",
     provider => 'shell',
     path     => '/bin',
   }
