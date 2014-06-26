@@ -8,9 +8,9 @@ class contrail::common {
     #   ensure => installed,
     #   before => Service[qpidd];
 
-    'rabbitmq-server':
-      ensure => installed;
-  }  
+#    'rabbitmq-server':
+#      ensure => installed;
+#  }  
 
   exec { 
     'create-python-api-env':

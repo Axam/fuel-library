@@ -54,6 +54,20 @@ class contrail::controller (
         Exec['create-python-analytics-env']
       ],
       source  => 'puppet:///modules/contrail/named.conf';
+    '/etc/init.d/contrail-dns':
+      notify  => Service['contrail-dns'],
+      ensure  => present,
+      source  => 'puppet:///modules/contrail/contrail-dns',
+      mode    => '0731',
+      owner   => 'root',
+      group   => 'root';
+    '/etc/init.d/contrail-named':
+      notify  => Service['contrail-named'],
+      ensure  => present,
+      source  => 'puppet:///modules/contrail/contrail-named',
+      mode    => '0731',
+      owner   => 'root',
+      group   => 'root';
     }
 
   service {
@@ -64,11 +78,11 @@ class contrail::controller (
     'contrail-dns':
       ensure      => running,
       enable      => true,
-      require     => File['/etc/contrail/dns_param'];
+      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
     'contrail-named':
       ensure      => running,
       enable      => true,
-      require     => File['/etc/contrail/dns_param'];
+      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-named'];
   }
  
   firewall {

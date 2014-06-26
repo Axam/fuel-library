@@ -18,8 +18,8 @@ class contrail::quantum (
       ensure => '2013.2-1.05.215m1';
     ['contrail-api-lib', 'python-django-compressor', 'python-django-openstack-auth']:
       ensure => present;
-     'openstack-dashboard':
-       ensure => '2012.1-243';
+#     'openstack-dashboard':
+#       ensure => '2012.1-243';
     'python-neutronclient':
       ensure => '2.3.0-11.05.215m1';
     # 'nodejs':  
@@ -36,7 +36,7 @@ class contrail::quantum (
       force   => true,
       ensure  => 'link',
       target  => '/etc/openstack-dashboard/local_settings',
-      require => [Package['openstack-dashboard'], File['/etc/openstack-dashboard/local_settings']],
+      require => [Package['openstack-dashboard'], Exec['contrail-dashboard'],File['/etc/openstack-dashboard/local_settings']],
       notify  => Service['httpd'];
     '/etc/contrail':
       ensure  => directory,
@@ -103,6 +103,9 @@ class contrail::quantum (
    'QUOTAS/quota_network':                 value => '-1';
    'QUOTAS/quota_subnet':                  value => '-1';
    'QUOTAS/quota_port':                    value => '-1';
+   'APISERVER/api_server_ip':              value => $quantum_config['contrail']['api_ip'];
+   'APISERVER/api_server_port':            value => '8082';
+   'APISERVER/multi_tenancy':              value => 'True';
   }
   
   contrail_plugin_ini_config {
@@ -118,14 +121,22 @@ class contrail::quantum (
   service { 'neutron-server':
     ensure      => running,
     enable      => true,
+    require     => Exec['config-neutron-apiserver'];
   }
 
-#  exec { 'contrail-dashboard':
-#    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
-#    require  => Package['dashboard'],
-#    before   => File['/etc/openstack-dashboard/local_settings'],
-#    path     => '/usr/bin',
-#  }
+  exec { 'contrail-dashboard':
+    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
+    require  => Package['dashboard'],
+    before   => File['/etc/openstack-dashboard/local_settings'],
+    path     => '/usr/bin',
+  }
+
+  exec { 'config-neutron-apiserver':
+    command  => "/usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_ip $api_ip && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_port 8082 && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER multi_tenancy True",
+    provider => 'shell',
+    path     => '/bin',
+  }
+
   
   # exec { 'contrail-api-lib':
   #   command  => "yum install -d 0 -e 0 -y contrail-api-lib-1.02-243.el6.noarch",

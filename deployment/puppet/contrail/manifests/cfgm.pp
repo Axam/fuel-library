@@ -41,6 +41,8 @@ class contrail::cfgm (
       ensure => installed;
     'm2crypto':
       ensure => installed;
+    'rabbitmq-server':
+      ensure => installed;
     'haproxy':
       ensure => installed;
     'zookeeper':
@@ -60,7 +62,10 @@ class contrail::cfgm (
       mode    => '0755',
       owner   => root,
       group   => root,
-      require => Package['supervisor'],
+      require => [
+        Package['supervisor', 'rabbitmq-server'],
+        Service['rabbitmq-server']
+      ],
       content => template('/etc/puppet/modules/contrail/templates/contrail-api.ini.erb');
     '/etc/contrail/supervisord_config_files/contrail-discovery.ini':
       ensure  => present,
@@ -92,7 +97,8 @@ class contrail::cfgm (
       owner   => 'root',
       group   => 'root',
       require => [
-        Package['contrail-config'], 
+        Package['contrail-config', 'rabbitmq-server'],
+        Service['rabbitmq-server'], 
         Exec['create-python-api-env']
       ],
       content => template('/etc/puppet/modules/contrail/templates/api_server.conf.erb');
@@ -190,15 +196,17 @@ class contrail::cfgm (
       mode    => '0731',
       owner   => 'root',
       group   => 'root',
-      require => Package['contrail-config'];
+      require => [
+        Package['contrail-config', 'rabbitmq-server'],
+        Service['rabbitmq-server']
+      ];
     '/etc/init.d/contrail-discovery':
       ensure  => present,
       source  => 'puppet:///modules/contrail/contrail-discovery',
       mode    => '0731',
       owner   => 'root',
       group   => 'root',
-      require => Package['contrail-config'];
-      
+      require => Package['contrail-config'];      
   }
   service {
     'supervisor-config':
@@ -212,6 +220,10 @@ class contrail::cfgm (
         File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
         Exec['create-python-api-env']
         ];
+    'rabbitmq-server':
+      ensure      => running,
+      enable      => true,
+      require => Package["rabbitmq-server"];
     'haproxy':
       ensure      => running,
       enable      => true,

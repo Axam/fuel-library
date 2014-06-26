@@ -12,6 +12,8 @@ cassandra_server_list=<% @cassandra_ip.each do |cassandra| -%><%= cassandra %>:9
 disc_server_ip=<%=@api_ip%>
 disc_server_port=5998
 
+rabbit_server=<%=@api_ip%>
+
 [SECURITY]
 use_certs=False
 keyfile=/etc/contrail/ssl/private_keys/svc_monitor_key.pem
@@ -23,4 +25,3 @@ auth_host=<%=@keystone_ip%>
 admin_user=<%=@admin_user%>
 admin_password=<%=@admin_pass%>
 admin_tenant_name=admin
-admin_token=<%=@admin_token%>
