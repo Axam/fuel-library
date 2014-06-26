@@ -209,9 +209,9 @@ class openstack::nova::controller (
     }
     class { 'contrail::quantum':
       neutron_config     => $quantum_config,
-      rabbit_user        => $rabbit_user,
-      rabbit_password    => $rabbit_password,
-      rabbit_hosts       => $rabbit_hosts,
+      rabbit_user        => $amqp_user,
+      rabbit_password    => $amqp_password,
+      rabbit_hosts       => $amqp_hosts,
       auth_host          => $keystone_host,
       admin_password     => $quantum_config['keystone']['admin_password'],
       bind_host          => $q_bind_host
