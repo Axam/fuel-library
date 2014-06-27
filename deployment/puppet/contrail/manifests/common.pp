@@ -10,7 +10,7 @@ class contrail::common {
 
 #    'rabbitmq-server':
 #      ensure => installed;
-#  }  
+  }  
 
   exec { 
     'create-python-api-env':

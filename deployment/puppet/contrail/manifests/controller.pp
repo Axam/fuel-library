@@ -75,14 +75,15 @@ class contrail::controller (
       ensure      => running,
       enable      => true,
       require     => File['/etc/contrail/control_param'];
-    'contrail-dns':
-      ensure      => running,
-      enable      => true,
-      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
     'contrail-named':
       ensure      => running,
       enable      => true,
       require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-named'];
+    'contrail-dns':
+      notify      => Service ['supervisor-control'],
+      ensure      => running,
+      enable      => true,
+      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
   }
  
   firewall {

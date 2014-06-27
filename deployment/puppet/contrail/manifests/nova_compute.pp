@@ -9,8 +9,11 @@ class contrail::nova_compute (
   $mysql_ip = $quantum_ip,
 ) {
 
-  package {'openstack-nova-compute':
-    ensure => installed,
+  package {
+    'openstack-nova-compute':
+      ensure => installed;
+    'contrail-nova-vif':
+      ensure => installed;
   }
 
   file {
@@ -20,7 +23,7 @@ class contrail::nova_compute (
       mode    => '0640',
       owner   => root,
       group   => nova,
-      require => Package['openstack-nova-compute'],
+      require => Package['openstack-nova-compute', 'contrail-nova-vif'],
       content => template('/etc/puppet/modules/contrail/templates/nova.conf.erb');
     '/etc/contrail/ctrl-details':
       ensure  => present,

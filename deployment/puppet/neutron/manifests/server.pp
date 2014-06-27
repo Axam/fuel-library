@@ -4,6 +4,7 @@ class neutron::server (
   $primary_controller = false,
 ) {
   include 'neutron::params'
+  include 'neutron::waist_setup'
 
   require 'keystone::python'
 
