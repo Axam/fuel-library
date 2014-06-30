@@ -45,7 +45,7 @@ class openstack::nova::controller (
   $multi_host                = false,
   $network_config            = {},
   $network_manager           = 'nova.network.manager.FlatDHCPManager',
-  $nova_quota_driver         = 'nova.quota.NoopQuotaDriver',
+  $nova_quota_driver         = 'nova.quota.DbQuotaDriver', # Changed to fix Launchpad bug #1288814
   # Quantum
   $quantum                   = false,
   $quantum_config            = {},

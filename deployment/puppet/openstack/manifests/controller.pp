@@ -326,11 +326,14 @@ class openstack::controller (
     $enabled_apis = 'ec2,osapi_compute,osapi_volume'
   }
 
-  if $::fuel_settings['nova_quota'] {
+# Changed to fix Launchpad bug #1288814
+#  if $::fuel_settings['nova_quota'] {
     $nova_quota_driver = "nova.quota.DbQuotaDriver"
-  } else {
-    $nova_quota_driver = "nova.quota.NoopQuotaDriver"
-  }
+#  } else {
+#    $nova_quota_driver = "nova.quota.NoopQuotaDriver"
+#  }
+# Changed to fix Launchpad bug #1288814
+
 
   class { 'openstack::nova::controller':
     # Database

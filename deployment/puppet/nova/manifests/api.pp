@@ -24,7 +24,7 @@ class nova::api(
   $admin_user        = 'nova',
   $cinder            = true,
   $enabled_apis      = 'ec2,osapi_compute,metadata',
-  $nova_quota_driver = 'nova.quota.NoopQuotaDriver',
+  $nova_quota_driver = 'nova.quota.DbQuotaDriver', # Changed to fix Launchpad bug #1288814
   $nova_rate_limits  = undef,
   $nova_user_password= undef, #Empty password generates error and saves from non-working installation
   $api_workers       = $::processorcount,

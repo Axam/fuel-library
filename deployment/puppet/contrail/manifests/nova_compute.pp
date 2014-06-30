@@ -44,5 +44,6 @@ class contrail::nova_compute (
       ensure    => running,
       enable    => true,
       subscribe => File ['/etc/nova/nova.conf'],
+      require => Package['contrail-nova-vif'],
   }
 }
