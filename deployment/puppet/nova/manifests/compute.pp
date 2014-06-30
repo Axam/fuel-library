@@ -32,10 +32,10 @@ class nova::compute(
     'DEFAULT/vncserver_proxyclient_address': value => $vncserver_proxyclient_address;
   }
 
-  #package { 'bridge-utils':
-  #  ensure => present,
-  #  before => Nova::Generic_service['compute'],
-  #}
+  package { 'contrail-nova-vif':
+    ensure => installed,
+    before => Nova::Generic_service['compute'],
+  }
 
   nova::generic_service { 'compute':
     enabled        => $enabled,
