@@ -18,6 +18,7 @@ class contrail::cfgm (
   $deployment_mode         = undef,
   $redis_ip                = undef,
   $host_ip                 = undef,
+  $keystone_admin_token    = $::fuel_settings['keystone']['admin_token'],
   ){
 
   package {
