@@ -74,6 +74,8 @@ class cluster::haproxy_ocf {
     } -> File['haproxy-ocf']
   }
 
+  sysctl::value { 'net.ipv4.ip_forward': value=>'1' }
+
   sysctl::value { 'net.ipv4.ip_nonlocal_bind':
     value => '1'
   } ->

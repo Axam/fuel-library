@@ -123,6 +123,7 @@ class contrail::quantum (
     ensure      => running,
     enable      => true,
 #    require     => Exec['config-neutron-apiserver'];
+    require     => Exec['enable_forwarding','save_ipv4_forward'];
   }
 
   exec { 'contrail-dashboard':
@@ -130,6 +131,19 @@ class contrail::quantum (
     require  => Package['dashboard'],
     before   => File['/etc/openstack-dashboard/local_settings'],
     path     => '/usr/bin',
+  }
+
+  exec { 'enable_forwarding':
+    path => '/usr/bin:/bin:/usr/sbin:/sbin',
+    command => 'echo 1 > /proc/sys/net/ipv4/ip_forward',
+    unless  => 'cat /proc/sys/net/ipv4/ip_forward | grep -q 1',
+  }
+  exec { 'save_ipv4_forward':
+    path => '/usr/bin:/bin:/usr/sbin:/sbin',
+    command => 'sed -i --follow-symlinks -e "/net\.ipv4\.ip_forward/d" \
+                   /etc/sysctl.conf && echo "net.ipv4.ip_forward = 1" >> \
+                   /etc/sysctl.conf',
+    unless  => 'grep -q "^\s*net\.ipv4\.ip_forward = 1" /etc/sysctl.conf',
   }
 
   exec { 'config-neutron-apiserver':
