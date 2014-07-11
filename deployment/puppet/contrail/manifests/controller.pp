@@ -74,6 +74,7 @@ class contrail::controller (
     'supervisor-control':
       ensure      => running,
       enable      => true,
+      notify      => Service['supervisor-analytics'],
       require     => File['/etc/contrail/control_param'];
     'contrail-named':
       ensure      => running,

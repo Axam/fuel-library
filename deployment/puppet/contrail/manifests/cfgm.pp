@@ -213,6 +213,7 @@ class contrail::cfgm (
     'supervisor-config':
       ensure      => running,
       enable      => true,
+      notify      => Service['supervisor-control'],
       require     =>  [
         File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
         Service['contrail-named','contrail-dns'],
@@ -292,7 +293,7 @@ class contrail::cfgm (
    exec { 'wait_for_supervisor-config' :
      require => Service['supervisor-config'],
      # before  => Exec['create-control-exec'],
-     command => "sleep 120",
+     command => "sleep 120 && /etc/init.d/supervisor-analytics restart",
      path => "/usr/bin:/bin",
    }
   
