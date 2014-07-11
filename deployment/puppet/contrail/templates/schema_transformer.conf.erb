@@ -13,7 +13,9 @@ cassandra_server_list=<% @cassandra_ip.each do |cassandra| -%><%= cassandra %>:9
 disc_server_ip=<%=@api_ip%>
 disc_server_port=5998
 
-rabbit_server=<%=@discovery_server_ip%>
+rabbit_server=<%=@openstack_controller_ip%>
+rabbit_user=<%=@rabbit_user%>
+rabbit_password=<%=@rabbit_password%>
  
 [SECURITY]
 use_certs=False
