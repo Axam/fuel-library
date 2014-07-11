@@ -676,6 +676,11 @@ class osnailyfacter::cluster_ha {
         local_sdn_node_ip       => $quantum_config['contrail']['host_ip'],
       }
 
+      class { 'contrail::quantum':
+        api_ip                  => $::fuel_settings['management_vip'],
+        sdn_controllers         => $quantum_config['contrail']['sdn_controllers'],
+      }
+
       class { 'contrail::collector':
         discovery_server_ip     => $quantum_config['contrail']['discovery_server_ip'],
         database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],

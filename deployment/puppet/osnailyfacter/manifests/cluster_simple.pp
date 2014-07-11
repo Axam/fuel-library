@@ -508,6 +508,11 @@ class osnailyfacter::cluster_simple {
         collector_ip            => $quantum_config['contrail']['collector_ip'],
       }
 
+      class { 'contrail::quantum':
+        api_ip                  => $quantum_config['contrail']['api_ip'],
+        sdn_controllers         => $quantum_config['contrail']['sdn_controllers'],
+      }
+
       class { 'contrail::collector':
         discovery_server_ip     => $quantum_config['contrail']['discovery_server_ip'],
         database_ip             => $quantum_config['contrail']['hosts_ip_list_mgmt'],

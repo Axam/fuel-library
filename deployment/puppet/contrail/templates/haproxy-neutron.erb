@@ -1,0 +1,8 @@
+listen contrail-api
+  bind <%=@internal_virtual_ip%>:8082
+  bind <%=@publice_virtual_ip%>:8082
+  balance     roundrobin
+  <% @sdn_controllers.each do |host| -%>
+  server <%= host %> <%= host %>:9100 check
+  <%end-%>
+

@@ -1,17 +1,21 @@
 class contrail::quantum (
-  $neutron_config    = {},
-  $rabbit_user       = undef,
-  $rabbit_password   = undef,
-  $rabbit_hosts      = undef,
-  $auth_host         = '127.0.0.1',
-  $auth_port         = 35357,
-  $auth_protocol     = 'http',
-  $admin_tenant_name = 'services',
-  $admin_user        = 'neutron',
-  $admin_password    = 'neutron',
-  $bind_port         = 9696,
-  $bind_host         = '0.0.0.0',
-  $api_ip            = $quantum_config['contrail']['api_ip'],
+  $neutron_config      = {},
+  $rabbit_user         = undef,
+  $rabbit_password     = undef,
+  $rabbit_hosts        = undef,
+  $auth_host           = '127.0.0.1',
+  $auth_port           = 35357,
+  $auth_protocol       = 'http',
+  $admin_tenant_name   = 'services',
+  $admin_user          = 'neutron',
+  $admin_password      = 'neutron',
+  $bind_port           = 9696,
+  $bind_host           = '0.0.0.0',
+  $api_ip              = undef,
+  $sdn_controllers     = undef,
+  $internal_virtual_ip = $::fuel_settings['management_vip'],
+  $public_virtual_ip   = $::fuel_settings['public_vip'],
+
 ){
   
   package {
@@ -52,6 +56,13 @@ class contrail::quantum (
       group   => 'root',
       require => File['/etc/contrail'],
       content => template('/etc/puppet/modules/contrail/templates/vnc_api_lib.ini-quantum.erb');
+    '/etc/haproxy/conf.d/990-contrail.cfg':
+      ensure  => present,
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      require => File['/etc/haproxy/conf.d'],
+      content => template('/etc/puppet/modules/contrail/templates/haproxy-neutron.erb');
   }
   
   file_line { 'local_settings':
@@ -104,13 +115,13 @@ class contrail::quantum (
    'QUOTAS/quota_network':                 value => '-1';
    'QUOTAS/quota_subnet':                  value => '-1';
    'QUOTAS/quota_port':                    value => '-1';
-   'APISERVER/api_server_ip':              value => $quantum_config['contrail']['api_ip'];
+   'APISERVER/api_server_ip':              value => $api_ip;
    'APISERVER/api_server_port':            value => '8082';
    'APISERVER/multi_tenancy':              value => 'True';
   }
   
   contrail_plugin_ini_config {
-    'APISERVER/api_server_ip':             value => $quantum_config['contrail']['api_ip'];
+    'APISERVER/api_server_ip':             value => $api_ip;
     'APISERVER/api_server_port':           value => '8082';
     'APISERVER/multi_tenancy':             value => 'True';
     'KEYSTONE/admin_user':                 value => $admin_user;
