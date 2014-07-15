@@ -220,11 +220,6 @@ class openstack::nova::controller (
       #   default  => '0.0.0.0',
       # }
     }
-    class { 'contrail::cfgm':
-      rabbit_user        => $amqp_user,
-      rabbit_password    => $amqp_password,
-      rabbit_hosts       => $amqp_hosts      
-    }
     #todo: <<<
     class { '::nova::network::neutron':
       neutron_config => $quantum_config,

@@ -462,6 +462,7 @@ class osnailyfacter::cluster_simple {
         api_ip                     => $quantum_config['contrail']['api_ip'],
         host_ip                    => $quantum_config['contrail']['host_ip'],
         discovery_server_ip        => $quantum_config['contrail']['api_ip'],
+        openstack_controller_ip    => $quantum_config['contrail']['openstack_controller_ip'],
         as_number                  => $quantum_config['contrail']['as_number'],
         admin_user                 => $::fuel_settings['access']['user'],
         admin_pass                 => $::fuel_settings['access']['password'],

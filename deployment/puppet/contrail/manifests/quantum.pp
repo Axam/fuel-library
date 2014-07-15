@@ -182,12 +182,12 @@ class contrail::quantum (
     unless  => 'grep -q "^\s*net\.ipv4\.ip_forward = 1" /etc/sysctl.conf',
   }
 
-  exec { 'config-neutron-apiserver':
-    notify   => Service['neutron-server'],
-    command  => "/usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_ip $api_ip && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_port 8082 && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER multi_tenancy True",
-    provider => 'shell',
-    path     => '/bin',
-  }
+#  exec { 'config-neutron-apiserver':
+#    notify   => Service['neutron-server'],
+#    command  => "/usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_ip $api_ip && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER api_server_port 8082 && /usr/bin/openstack-config --set /etc/neutron/neutron.conf APISERVER multi_tenancy True",
+#    provider => 'shell',
+#    path     => '/bin',
+#  }
 
   
   # exec { 'contrail-api-lib':
