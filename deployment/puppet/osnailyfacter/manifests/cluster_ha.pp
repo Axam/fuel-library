@@ -648,6 +648,9 @@ class osnailyfacter::cluster_ha {
         admin_pass              => $::fuel_settings['access']['password'],
         quantum_user            => $quantum_config['keystone']['admin_user'],
         quantum_pass            => $quantum_config['keystone']['admin_password'],
+        rabbit_user             => $rabbit_hash['user'],
+        rabbit_password         => $rabbit_hash['password'],
+        rabbit_hosts            => $amqp_hosts,      
         keystone_ip             => $::fuel_settings['management_vip'],
         api_ip                  => $quantum_config['contrail']['host_ip'],
         ifmap_ip                => $quantum_config['contrail']['ifmap_ip'],
@@ -658,7 +661,7 @@ class osnailyfacter::cluster_ha {
         sdn_controllers         => $quantum_config['contrail']['sdn_controllers'],
         host_ip                 => $quantum_config['contrail']['host_ip'],
       }
-      
+     
       class { 'contrail::database':
         host_ip                 => $quantum_config['contrail']['host_ip'],
         discovery_server_ip     => $quantum_config['contrail']['api_ip'],
