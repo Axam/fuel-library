@@ -37,7 +37,7 @@ class contrail::quantum (
       target  => '/usr/bin/node',
       require => Package['openstack-dashboard', 'nodejs', 'python-neutronclient'],
       notify  => Service['httpd'];
-    '/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py':
+   '/usr/share/openstack-dashboard/openstack_dashboard/local/local_settings.py':
       force   => true,
       ensure  => 'link',
       target  => '/etc/openstack-dashboard/local_settings',
@@ -56,15 +56,13 @@ class contrail::quantum (
       group   => 'root',
       require => File['/etc/contrail'],
       content => template('/etc/puppet/modules/contrail/templates/vnc_api_lib.ini-quantum.erb');
-    unless $::fuel_settings['deployment_mode'] == 'multinode' {
-      '/etc/haproxy/conf.d/990-contrail.cfg':
-        ensure  => present,
-        mode    => '0644',
-        owner   => 'root',
-        group   => 'root',
-        require => File['/etc/haproxy/conf.d'],
-        content => template('/etc/puppet/modules/contrail/templates/haproxy-neutron.erb');
-    }
+    '/etc/haproxy/conf.d/990-contrail.cfg':
+      ensure  => present,
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      require => File['/etc/haproxy/conf.d'],
+      content => template('/etc/puppet/modules/contrail/templates/haproxy-neutron.erb');
   }
   
   file_line { 'local_settings':
@@ -146,15 +144,28 @@ class contrail::quantum (
      'APISERVER/multi_tenancy':              value => 'True';
     }
   }
-  
-  contrail_plugin_ini_config {
-    'APISERVER/api_server_ip':             value => $api_ip;
-    'APISERVER/api_server_port':           value => '8082';
-    'APISERVER/multi_tenancy':             value => 'True';
-    'KEYSTONE/admin_user':                 value => $admin_user;
-    'KEYSTONE/admin_password':             value => $admin_password;
-    'KEYSTONE/admin_tenant_name':          value => $admin_tenant_name;
-    #todo: add keystone IP/url
+
+  if $::fuel_settings['deployment_mode'] == 'multinode' {
+    contrail_plugin_ini_config {
+      'APISERVER/api_server_ip':             value => $quantum_config['contrail']['api_ip'];
+      'APISERVER/api_server_port':           value => '8082';
+      'APISERVER/multi_tenancy':             value => 'True';
+      'KEYSTONE/admin_user':                 value => $admin_user;
+      'KEYSTONE/admin_password':             value => $admin_password;
+      'KEYSTONE/admin_tenant_name':          value => $admin_tenant_name;
+      #todo: add keystone IP/url
+    }
+  }
+  else {
+    contrail_plugin_ini_config {
+      'APISERVER/api_server_ip':             value => $::fuel_settings['management_vip'];
+      'APISERVER/api_server_port':           value => '8082';
+      'APISERVER/multi_tenancy':             value => 'True';
+      'KEYSTONE/admin_user':                 value => $admin_user;
+      'KEYSTONE/admin_password':             value => $admin_password;
+      'KEYSTONE/admin_tenant_name':          value => $admin_tenant_name;
+      #todo: add keystone IP/url
+    }
   }
 
   service { 'neutron-server':
