@@ -12,7 +12,7 @@ class contrail::quantum (
   $bind_port           = 9696,
   $bind_host           = '0.0.0.0',
   $api_ip              = undef,
-  $sdn_controllers     = undef,
+  $sdn_controllers     = $quantum_config['contrail']['sdn_controllers'],
   $internal_virtual_ip = $::fuel_settings['management_vip'],
   $public_virtual_ip   = $::fuel_settings['public_vip'],
 
@@ -97,27 +97,52 @@ class contrail::quantum (
     require => Package['openstack-neutron-contrail'],
     notify => Service['neutron-server']
   }
-  
-  neutron_config {
-   'DEFAULT/rpc_backend':                  value => 'neutron.openstack.common.rpc.impl_kombu';
-   'DEFAULT/rabbit_userid':                value => $rabbit_user;
-   'DEFAULT/rabbit_password':              value => $rabbit_password;
-   'DEFAULT/rabbit_hosts':                 value => $rabbit_hosts;
-   'DEFAULT/bind_host':                    value => $bind_host;
-   'DEFAULT/bind_port':                    value => $bind_port;
-   'DEFAULT/core_plugin':                  value => 'neutron.plugins.juniper.contrail.contrailplugin.ContrailPlugin';
-   'keystone_authtoken/auth_host':         value => $auth_host;
-   'keystone_authtoken/auth_port':         value => $auth_port;
-   'keystone_authtoken/auth_protocol':     value => $auth_protocol;
-   'keystone_authtoken/admin_tenant_name': value => $admin_tenant_name;
-   'keystone_authtoken/admin_user':        value => $admin_user;
-   'keystone_authtoken/admin_password':    value => $admin_password;
-   'QUOTAS/quota_network':                 value => '-1';
-   'QUOTAS/quota_subnet':                  value => '-1';
-   'QUOTAS/quota_port':                    value => '-1';
-   'APISERVER/api_server_ip':              value => $api_ip;
-   'APISERVER/api_server_port':            value => '8082';
-   'APISERVER/multi_tenancy':              value => 'True';
+
+  if $::fuel_settings['deployment_mode'] == 'multinode' {
+    neutron_config {
+     'DEFAULT/rpc_backend':                  value => 'neutron.openstack.common.rpc.impl_kombu';
+     'DEFAULT/rabbit_userid':                value => $rabbit_user;
+     'DEFAULT/rabbit_password':              value => $rabbit_password;
+     'DEFAULT/rabbit_hosts':                 value => $rabbit_hosts;
+     'DEFAULT/bind_host':                    value => $bind_host;
+     'DEFAULT/bind_port':                    value => $bind_port;
+     'DEFAULT/core_plugin':                  value => 'neutron.plugins.juniper.contrail.contrailplugin.ContrailPlugin';
+     'keystone_authtoken/auth_host':         value => $auth_host;
+     'keystone_authtoken/auth_port':         value => $auth_port;
+     'keystone_authtoken/auth_protocol':     value => $auth_protocol;
+     'keystone_authtoken/admin_tenant_name': value => $admin_tenant_name;
+     'keystone_authtoken/admin_user':        value => $admin_user;
+     'keystone_authtoken/admin_password':    value => $admin_password;
+     'QUOTAS/quota_network':                 value => '-1';
+     'QUOTAS/quota_subnet':                  value => '-1';
+     'QUOTAS/quota_port':                    value => '-1';
+     'APISERVER/api_server_ip':              value => $quantum_config['contrail']['api_ip'];
+     'APISERVER/api_server_port':            value => '8082';
+     'APISERVER/multi_tenancy':              value => 'True';
+    }
+  }
+  else {
+    neutron_config {
+     'DEFAULT/rpc_backend':                  value => 'neutron.openstack.common.rpc.impl_kombu';
+     'DEFAULT/rabbit_userid':                value => $rabbit_user;
+     'DEFAULT/rabbit_password':              value => $rabbit_password;
+     'DEFAULT/rabbit_hosts':                 value => $rabbit_hosts;
+     'DEFAULT/bind_host':                    value => $bind_host;
+     'DEFAULT/bind_port':                    value => $bind_port;
+     'DEFAULT/core_plugin':                  value => 'neutron.plugins.juniper.contrail.contrailplugin.ContrailPlugin';
+     'keystone_authtoken/auth_host':         value => $auth_host;
+     'keystone_authtoken/auth_port':         value => $auth_port;
+     'keystone_authtoken/auth_protocol':     value => $auth_protocol;
+     'keystone_authtoken/admin_tenant_name': value => $admin_tenant_name;
+     'keystone_authtoken/admin_user':        value => $admin_user;
+     'keystone_authtoken/admin_password':    value => $admin_password;
+     'QUOTAS/quota_network':                 value => '-1';
+     'QUOTAS/quota_subnet':                  value => '-1';
+     'QUOTAS/quota_port':                    value => '-1';
+     'APISERVER/api_server_ip':              value => $::fuel_settings['management_vip'];
+     'APISERVER/api_server_port':            value => '8082';
+     'APISERVER/multi_tenancy':              value => 'True';
+    }
   }
   
   contrail_plugin_ini_config {
