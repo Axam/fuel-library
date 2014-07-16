@@ -56,6 +56,11 @@ class contrail::quantum (
       group   => 'root',
       require => File['/etc/contrail'],
       content => template('/etc/puppet/modules/contrail/templates/vnc_api_lib.ini-quantum.erb');
+    '/etc/haproxy/conf.d':
+      ensure  => directory,
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root';
     '/etc/haproxy/conf.d/990-contrail.cfg':
       ensure  => present,
       mode    => '0644',
