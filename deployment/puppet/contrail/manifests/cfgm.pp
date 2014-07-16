@@ -296,7 +296,7 @@ class contrail::cfgm (
    exec { 'wait_for_supervisor-config' :
      require => Service['supervisor-config'],
      # before  => Exec['create-control-exec'],
-     command => "sleep 120 && /etc/init.d/supervisor-analytics restart",
+     command => "sleep 150 && /etc/init.d/supervisor-analytics restart",
      path => "/usr/bin:/bin",
    }
   

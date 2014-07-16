@@ -186,11 +186,18 @@ class contrail::controller (
   }
 
   exec { 'provision-linklocal':
-   command  => "/usr/bin/python /opt/contrail/utils/provision_linklocal.py --admin_user ${admin_user} --admin_password ${admin_pass} --linklocal_service_name metadata --linklocal_service_ip 169.254.169.254 --linklocal_service_port 80 --ipfabric_service_ip ${openstack_controller_ip} --ipfabric_service_port 8775 --oper add && touch /etc/contrail/encap.done",
+    command  => "/usr/bin/python /opt/contrail/utils/provision_linklocal.py --admin_user ${admin_user} --admin_password ${admin_pass} --linklocal_service_name metadata --linklocal_service_ip 169.254.169.254 --linklocal_service_port 80 --ipfabric_service_ip ${openstack_controller_ip} --ipfabric_service_port 8775 --oper add && touch /etc/contrail/encap.done",
     provider => 'shell',
     require  => [Service['supervisor-config'], Service['supervisor-control']],
     path     => '/bin',
     creates  => '/etc/contrail/linklocal.done';
+  }
+
+  exec { 'restart-analytics' :
+    command => "sleep 150 && /etc/init.d/supervisor-analytics restart && sleep 60",
+    provider => 'shell',
+    require  => [Service['supervisor-config'], Service['supervisor-control']],
+    path => "/usr/bin:/bin",
   }
 
  }
