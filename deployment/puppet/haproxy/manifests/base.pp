@@ -63,10 +63,10 @@ class haproxy::base (
       content => "\ninclude conf.d/*.cfg\n",
     }
 
-    file { '/etc/haproxy/conf.d':
-      ensure => 'directory',
-      owner  => '0',
-      group  => '0',
-    }
+#    file { '/etc/haproxy/conf.d':
+#      ensure => 'directory',
+#      owner  => '0',
+#      group  => '0',
+#    }
   }
 }
