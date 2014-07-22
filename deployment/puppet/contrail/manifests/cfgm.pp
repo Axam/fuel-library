@@ -187,13 +187,13 @@ class contrail::cfgm (
       owner   => 'root',
       group   => 'root',
       require => Package['contrail-config'];
-    #'/etc/zookeeper/conf/log4j.properties':
-    #  ensure  => present,
-    #  source  => 'puppet:///modules/contrail/log4j.properties',
-    #  mode    => '0644',
-    #  owner   => 'root',
-    #  group   => 'root',
-    #  require => Package['contrail-config'];  
+    '/etc/zookeeper/conf/log4j.properties':
+      ensure  => present,
+      source  => 'puppet:///modules/contrail/log4j.properties',
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      require => Package['contrail-config'];  
     '/etc/init.d/contrail-api':
       ensure  => present,
       source  => 'puppet:///modules/contrail/contrail-api',
