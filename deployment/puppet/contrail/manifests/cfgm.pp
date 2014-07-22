@@ -151,7 +151,7 @@ class contrail::cfgm (
       group   => 'root',
       require => Package['contrail-config'],
       content => template('/etc/puppet/modules/contrail/templates/redis-uve.conf.erb');
-    '/etc/zookeeper/zoo.cfg':
+    '/etc/zookeeper/conf/zoo.cfg':
       notify  => Service['zookeeper'],
       ensure  => present,
       mode    => '0644',
@@ -187,13 +187,13 @@ class contrail::cfgm (
       owner   => 'root',
       group   => 'root',
       require => Package['contrail-config'];
-    '/etc/zookeeper/log4j.properties':
-      ensure  => present,
-      source  => 'puppet:///modules/contrail/log4j.properties',
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
-      require => Package['contrail-config'];  
+    #'/etc/zookeeper/conf/log4j.properties':
+    #  ensure  => present,
+    #  source  => 'puppet:///modules/contrail/log4j.properties',
+    #  mode    => '0644',
+    #  owner   => 'root',
+    #  group   => 'root',
+    #  require => Package['contrail-config'];  
     '/etc/init.d/contrail-api':
       ensure  => present,
       source  => 'puppet:///modules/contrail/contrail-api',
@@ -219,7 +219,7 @@ class contrail::cfgm (
       notify      => Service['supervisor-control'],
       require     =>  [
         File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
-        Service['contrail-named','contrail-dns'],
+        Service['contrail-named','contrail-dns','zookeeper'],
         ],
       subscribe   => [
         File['/etc/irond/basicauthusers.properties','/etc/contrail/redis_config.conf','/etc/contrail/redis-uve.conf','/etc/contrail/discovery.conf','/etc/contrail/api_server.conf','/etc/contrail/schema_transformer.conf','/etc/contrail/supervisord_config_files/contrail-api.ini','/etc/contrail/supervisord_config_files/contrail-discovery.ini','/var/lib/zookeeper/myid','/etc/contrail/ctrl-details'],
@@ -243,7 +243,10 @@ class contrail::cfgm (
     'zookeeper':
       ensure  => "running",
       enable  => "true",
-      require => Package["zookeeper"]
+      require     => [
+        File['/var/lib/zookeeper/myid'],
+        Package["zookeeper"],
+        ];
   }
 
   firewall {

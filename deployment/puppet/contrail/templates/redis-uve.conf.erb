@@ -162,7 +162,7 @@ dir /var/lib/redis/
 # different interval, or to listen to another port, and so on.
 #
 <% if @discovery_server_ip != @host_ip %>       
-slaveof <%=@discovery_server_ip%> 6381
+#slaveof <%=@discovery_server_ip%> 6381
 <% end %>
 
 # If the master is password protected (using the "requirepass" configuration
