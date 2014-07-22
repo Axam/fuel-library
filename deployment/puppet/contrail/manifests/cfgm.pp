@@ -193,6 +193,7 @@ class contrail::cfgm (
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
+      notify  => Service['zookeeper'],
       require => Package['contrail-config'];  
     '/etc/init.d/contrail-api':
       ensure  => present,
