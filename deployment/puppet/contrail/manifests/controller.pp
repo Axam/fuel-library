@@ -192,14 +192,6 @@ class contrail::controller (
     path     => '/bin',
     creates  => '/etc/contrail/linklocal.done';
   }
-
-  exec { 'restart-analytics' :
-    command => "sleep 150 && /etc/init.d/supervisor-analytics restart && sleep 60",
-    provider => 'shell',
-    require  => [Service['supervisor-config'], Service['supervisor-control']],
-    path => "/usr/bin:/bin",
-  }
-
  }
 }
 
