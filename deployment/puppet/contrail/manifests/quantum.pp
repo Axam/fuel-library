@@ -20,13 +20,13 @@ class contrail::quantum (
   
   package {
     ['openstack-neutron-contrail', 'openstack-neutron']:
-      ensure => '2013.2-1.05.215m1';
+      ensure => '2013.2-1.05.224';
     ['contrail-api-lib', 'python-django-compressor', 'python-django-openstack-auth']:
       ensure => present;
 #     'openstack-dashboard':
 #       ensure => '2012.1-243';
     'python-neutronclient':
-      ensure => '2.3.0-11.05.215m1';
+      ensure => '2.3.0-11.05.224';
     # 'nodejs':  
     #   ensure => '0.10.4-1.el6';
   }
@@ -181,7 +181,7 @@ class contrail::quantum (
   }
 
   exec { 'contrail-dashboard':
-    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.215m1",
+    command  => "yum downgrade -d 0 -e 0 -y openstack-dashboard-2013.2-1.05.224",
     require  => Package['dashboard'],
     before   => File['/etc/openstack-dashboard/local_settings'],
     path     => '/usr/bin',
