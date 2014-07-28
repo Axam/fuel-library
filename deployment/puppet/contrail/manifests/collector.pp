@@ -55,7 +55,7 @@ class contrail::collector (
     
   firewall {
    '901 Contrail Redis':
-     port   => [26379,6380,6381,6382],
+     port   => [26379,6380,6381,6382,6383],
      proto  => 'tcp',
      action => 'accept';
    '902 Contrail opserver':

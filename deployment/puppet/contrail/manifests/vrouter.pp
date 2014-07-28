@@ -147,6 +147,10 @@ class contrail::vrouter (
       port   => [8102],
       proto  => 'tcp',
       action => 'accept';
+    '912 Contrail vrouter':
+      port   => [9005],
+      proto  => 'tcp',
+      action => 'accept';
   }
   
   exec { 'create_python_vrouter-env':

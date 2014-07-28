@@ -295,6 +295,26 @@ class contrail::cfgm (
      port   => [9100,9110],
      proto  => 'tcp',
      action => 'accept';
+   '912 Contrail Controller':
+     port   => [6383,9042,9100,9110],
+     proto  => 'tcp',
+     action => 'accept';
+   '913 Contrail Controller':
+     port   => [8092:8095],
+     proto  => 'tcp',
+     action => 'accept';
+   '914 Contrail Controller':
+     port   => [8100:8104],
+     proto  => 'tcp',
+     action => 'accept';
+   '915 Contrail Controller':
+     port   => [9002:9008],
+     proto  => 'tcp',
+     action => 'accept';
+   '916 Contrail vrouter agent':
+      port   => [9090,8085],
+      proto  => 'tcp',
+      action => 'accept';
    }
   
    exec { 'wait_for_supervisor-config' :
