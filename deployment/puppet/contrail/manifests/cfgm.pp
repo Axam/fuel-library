@@ -296,7 +296,7 @@ class contrail::cfgm (
      proto  => 'tcp',
      action => 'accept';
    '912 Contrail Controller':
-     port   => [6383,9042,9100,9110],
+     port   => [9042,9100,9110],
      proto  => 'tcp',
      action => 'accept';
    '913 Contrail Controller':

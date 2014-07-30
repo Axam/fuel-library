@@ -71,23 +71,43 @@ class contrail::controller (
       group   => 'root';
     }
 
-  service {
-    'supervisor-control':
-      ensure      => running,
-      enable      => true,
-      notify      => Service['supervisor-analytics'],
-      require     => File['/etc/contrail/control_param'];
-    'contrail-named':
-      ensure      => running,
-      enable      => true,
-      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-named'];
-    'contrail-dns':
-      notify      => Service ['supervisor-control'],
-      ensure      => running,
-      enable      => true,
-      require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
+  if $sdn_controllers_node_list[0] == $host_ip or $sdn_controllers_node_list[-1] == $host_ip {
+    service {
+      'supervisor-control':
+        ensure      => running,
+        enable      => true,
+        notify      => Service['supervisor-analytics'],
+        require     => File['/etc/contrail/control_param'];
+      'contrail-named':
+        ensure      => running,
+        enable      => true,
+        require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-named'];
+      'contrail-dns':
+        notify      => Service ['supervisor-control'],
+        ensure      => running,
+        enable      => true,
+        require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
+    }
   }
- 
+  else {
+    service {
+      'supervisor-control':
+        ensure      => stopped,
+        enable      => true,
+        notify      => Service['supervisor-analytics'],
+        require     => File['/etc/contrail/control_param'];
+      'contrail-named':
+        ensure      => stopped,
+        enable      => true,
+        require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-named'];
+      'contrail-dns':
+        notify      => Service ['supervisor-control'],
+        ensure      => stopped,
+        enable      => true,
+        require     => File['/etc/contrail/dns_param', '/etc/init.d/contrail-dns'];
+    }   
+  }
+   
   firewall {
    '911 Contrail - vRouter communication':
      port   => [5269,8093],
@@ -118,13 +138,13 @@ class contrail::controller (
     notify{ "SDN controller IP is: ${ctrl_ip}": }
   }
 
-  notify{ "SDN controller node names: ${sdn_controllers_node_names}": }
-  notify{ "SDN controller node list: ${sdn_controllers_node_list}": }
-  notify{ "WAN Gateways: ${wan_gateways}": }
-  
+  notify{ "SDN controller node names: ${sdn_controllers_node_names[0]} ${sdn_controllers_node_names[-1]}": }
+  notify{ "SDN controller node list: ${sdn_controllers_node_list[0]} ${sdn_controllers_node_list[-1]}": }
+  notify{ "WAN Gateways: ${wan_gateways}": }  
 
   if $sdn_controllers_node_list[-1] == $host_ip {
-    createCTRL { $sdn_controllers_node_names:}
+    $sdn_controllers_node_names_cut = [ $sdn_controllers_node_names[0], $sdn_controllers_node_names[-1]]    
+    createCTRL { $sdn_controllers_node_names_cut:}
   }
 
   define addMX() {
