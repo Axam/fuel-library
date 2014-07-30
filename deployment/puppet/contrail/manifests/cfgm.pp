@@ -300,15 +300,15 @@ class contrail::cfgm (
      proto  => 'tcp',
      action => 'accept';
    '913 Contrail Controller':
-     port   => [8092:8095],
+     port   => "8092-8095",
      proto  => 'tcp',
      action => 'accept';
    '914 Contrail Controller':
-     port   => [8100:8104],
+     port   => "8100-8104",
      proto  => 'tcp',
      action => 'accept';
    '915 Contrail Controller':
-     port   => [9002:9008],
+     port   => "9002-9008",
      proto  => 'tcp',
      action => 'accept';
    '916 Contrail vrouter agent':
