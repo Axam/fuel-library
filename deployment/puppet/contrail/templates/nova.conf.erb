@@ -27,6 +27,7 @@ neutron_admin_password = <%=@service_token%>
 neutron_admin_auth_url = http://<%=@quantum_ip%>:35357/v2.0/
 neutron_auth_strategy = keystone
 neutron_url = http://<%=@quantum_ip%>:9696/
+security_group_api = neutron
 
 volume_api_class = nova.volume.cinder.API
 enabled_apis=ec2,osapi_compute,metadata

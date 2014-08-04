@@ -22,7 +22,7 @@ class nova::network::neutron (
     'DEFAULT/neutron_admin_password':    value => $neutron_config['keystone']['admin_password'];
     'DEFAULT/neutron_admin_auth_url':    value => $neutron_config['keystone']['auth_url'];
     #'DEFAULT/firewall_driver':           value => 'nova.virt.firewall.NoopFirewallDriver';
-    #'DEFAULT/security_group_api':        value => 'neutron';
+    'DEFAULT/security_group_api':        value => 'neutron';
   }
 }
 
