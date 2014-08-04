@@ -315,6 +315,10 @@ class contrail::cfgm (
       port   => [9090,8085],
       proto  => 'tcp',
       action => 'accept';
+   '917 Contrail Controller':
+      port   => [8083],
+      proto  => 'tcp',
+      action => 'accept';
    }
   
    exec { 'wait_for_supervisor-config' :
