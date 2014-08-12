@@ -134,8 +134,9 @@ class contrail::vrouter (
         File['/etc/contrail/agent.conf'],
         File['/etc/contrail/agent_param'],
         File['/etc/sysconfig/network-scripts/ifcfg-vhost0']
-      ],
-      require     => [Exec['create_vrouter_exec'], Service['network']];
+      ];
+#      ],
+#      require     => [Exec['create_vrouter_exec'], Service['network']];
   } 
   
   firewall {
@@ -185,7 +186,8 @@ class contrail::vrouter (
       File['/etc/contrail/vrouter_nodemgr_param'],
       Exec['create_python_api-env'],
       Exec['create_python_vrouter-env'],
-      Exec['create_python_analytics-env']
+      Exec['create_python_analytics-env'],
+      Service['supervisor-vrouter']
     ],
   }
   
