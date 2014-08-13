@@ -121,9 +121,8 @@ class contrail::vrouter (
       subscribe   => [
         File["/etc/sysconfig/network-scripts/ifcfg-${vrouter_ifname}"],
         File['/etc/sysconfig/network-scripts/ifcfg-vhost0']
-        ],
-      require     => Exec['create_vrouter_exec'];
-    'haproxy':
+        ];
+   'haproxy':
       ensure      => running,
       enable      => true,
       require     => File['/etc/haproxy/haproxy.cfg'];
@@ -134,9 +133,8 @@ class contrail::vrouter (
         File['/etc/contrail/agent.conf'],
         File['/etc/contrail/agent_param'],
         File['/etc/sysconfig/network-scripts/ifcfg-vhost0']
-      ];
-#      ],
-#      require     => [Exec['create_vrouter_exec'], Service['network']];
+      ],
+      require     => Service['network'];
   } 
   
   firewall {
